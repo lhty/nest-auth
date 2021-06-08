@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:12-alpine
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - ./db_dump:/var/lib/postgresql/data
+#   redis:
+#     image: redis:6.0.9-alpine
+#     container_name: redis
+#     ports:
+#       - ${REDIS_PORT}:6379
+
+# pgAdmin:
+#   image: dpage/pgadmin4
+#   container_name: pgadmin
+#   environment:
+#     PGADMIN_DEFAULT_EMAIL: admin@hello.com
+#     PGADMIN_DEFAULT_PASSWORD: admin
+#   depends_on:
+#     - db
+#   volumes:
+#     - /.pgadmin
+#   ports:
+#     - 5050:80
