@@ -12,7 +12,7 @@ export class GqlConfigService implements GqlOptionsFactory {
         req,
         res,
       }),
-      autoSchemaFile: './schema.gql',
+      autoSchemaFile: './src/@generated/schema.gql',
     };
   }
 }
