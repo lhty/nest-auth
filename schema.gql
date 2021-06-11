@@ -1,0 +1,117 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserAvgAggregate {
+  id: Float
+}
+
+type UserCountAggregate {
+  id: Int!
+  email: Int!
+  name: Int!
+  _all: Int!
+}
+
+type UserMaxAggregate {
+  id: Int
+  email: String
+  name: String
+}
+
+type UserMinAggregate {
+  id: Int
+  email: String
+  name: String
+}
+
+type UserSumAggregate {
+  id: Int
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+}
+
+type Query {
+  userById(id: String!): User!
+  users(where: UserWhereInput): [User!]!
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IntFilter
+  email: StringFilter
+  name: StringFilter
+  pwd: StringFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+type Mutation {
+  signup(data: UserCreateInput!): User!
+}
+
+input UserCreateInput {
+  email: String!
+  name: String!
+  pwd: String!
+}

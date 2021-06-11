@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { GqlConfigService } from './common/graphql.options';
+import { GqlConfigService } from './config/graphql.options';
 import { JwtModule } from '@nestjs/jwt';
-import { UserModule } from './user/user.module';
+import { UserModule } from './modules/user.module';
 
 @Module({
   imports: [
