@@ -37,7 +37,16 @@ type User {
 
 type Query {
   userById(id: String!): User!
-  users(where: UserWhereInput): [User!]!
+  users(params: FindManyUserArgs): [User!]!
+}
+
+input FindManyUserArgs {
+  where: UserWhereInput
+  orderBy: [UserOrderByInput!]
+  cursor: UserWhereUniqueInput
+  take: Int
+  skip: Int
+  distinct: [UserScalarFieldEnum!]
 }
 
 input UserWhereInput {
@@ -104,6 +113,30 @@ input NestedStringFilter {
   startsWith: String
   endsWith: String
   not: NestedStringFilter
+}
+
+input UserOrderByInput {
+  id: SortOrder
+  email: SortOrder
+  name: SortOrder
+  pwd: SortOrder
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input UserWhereUniqueInput {
+  id: Int
+  email: String
+}
+
+enum UserScalarFieldEnum {
+  id
+  email
+  name
+  pwd
 }
 
 type Mutation {
