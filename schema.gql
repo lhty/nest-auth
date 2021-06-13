@@ -36,17 +36,13 @@ type User {
 }
 
 type Query {
-  userById(id: String!): User!
-  users(params: FindManyUserArgs): [User!]!
+  user(where: UserWhereUniqueInput!): User!
+  users(where: UserWhereInput, orderBy: [UserOrderByInput!], cursor: UserWhereUniqueInput, take: Int, skip: Int, distinct: [UserScalarFieldEnum!]): [User!]!
 }
 
-input FindManyUserArgs {
-  where: UserWhereInput
-  orderBy: [UserOrderByInput!]
-  cursor: UserWhereUniqueInput
-  take: Int
-  skip: Int
-  distinct: [UserScalarFieldEnum!]
+input UserWhereUniqueInput {
+  id: Int
+  email: String
 }
 
 input UserWhereInput {
@@ -127,11 +123,6 @@ enum SortOrder {
   desc
 }
 
-input UserWhereUniqueInput {
-  id: Int
-  email: String
-}
-
 enum UserScalarFieldEnum {
   id
   email
@@ -141,10 +132,22 @@ enum UserScalarFieldEnum {
 
 type Mutation {
   signup(data: UserCreateInput!): User!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
+  deleteUser(where: UserWhereUniqueInput!): User!
 }
 
 input UserCreateInput {
   email: String!
   name: String!
   pwd: String!
+}
+
+input UserUpdateInput {
+  email: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  pwd: StringFieldUpdateOperationsInput
+}
+
+input StringFieldUpdateOperationsInput {
+  set: String
 }
