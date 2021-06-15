@@ -14,15 +14,11 @@ export class UserService {
     return this.prisma.user.findMany(params);
   }
 
-  async createUser(data: Prisma.UserCreateArgs): Promise<User> {
-    return this.prisma.user.create(data);
+  async updateUser(user: Prisma.UserUpdateArgs): Promise<User> {
+    return this.prisma.user.update(user);
   }
 
-  async updateUser(data: Prisma.UserUpdateArgs): Promise<User> {
-    return this.prisma.user.update(data);
-  }
-
-  async deleteUser(data: Prisma.UserDeleteArgs): Promise<User> {
-    return this.prisma.user.delete(data);
+  async deleteUser(user: Prisma.UserDeleteArgs): Promise<User> {
+    return this.prisma.user.delete(user);
   }
 }

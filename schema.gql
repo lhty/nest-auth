@@ -35,6 +35,23 @@ type User {
   name: String!
 }
 
+type Token {
+  """JWT access token"""
+  accessToken: String!
+
+  """JWT refresh token"""
+  refreshToken: String!
+}
+
+type Auth {
+  """JWT access token"""
+  accessToken: String!
+
+  """JWT refresh token"""
+  refreshToken: String!
+  user: User!
+}
+
 type Query {
   user(where: UserWhereUniqueInput!): User!
   users(where: UserWhereInput, orderBy: [UserOrderByInput!], cursor: UserWhereUniqueInput, take: Int, skip: Int, distinct: [UserScalarFieldEnum!]): [User!]!
@@ -131,15 +148,11 @@ enum UserScalarFieldEnum {
 }
 
 type Mutation {
-  signup(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
-}
-
-input UserCreateInput {
-  email: String!
-  name: String!
-  pwd: String!
+  signup(user: UserCreateInput!): Auth!
+  login(data: UserLoginInput!): Auth!
+  refreshToken(token: String!): Token!
 }
 
 input UserUpdateInput {
@@ -150,4 +163,15 @@ input UserUpdateInput {
 
 input StringFieldUpdateOperationsInput {
   set: String
+}
+
+input UserCreateInput {
+  email: String!
+  name: String!
+  pwd: String!
+}
+
+input UserLoginInput {
+  email: String!
+  password: String!
 }
