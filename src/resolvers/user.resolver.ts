@@ -1,9 +1,9 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   User,
   FindUniqueUserArgs,
   FindManyUserArgs,
-  UserCreateInput,
   UpdateOneUserArgs,
   DeleteOneUserArgs,
 } from '../../prisma/@generated';

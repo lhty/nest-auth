@@ -5,17 +5,26 @@ import { PrismaService } from '../../config/prisma.service';
 import { AuthResolver } from '../../resolvers/auth.resolver';
 import { AuthService } from '../../services/auth.service';
 import { PasswordService } from '../../services/password.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: process.env.JWT_EXPIRES },
     }),
     PrismaService,
   ],
-  providers: [PrismaService, PasswordService, AuthService, AuthResolver],
+  providers: [
+    PrismaService,
+    PasswordService,
+    AuthService,
+    AuthResolver,
+    JwtStrategy,
+    LocalStrategy,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

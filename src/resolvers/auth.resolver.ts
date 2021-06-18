@@ -1,9 +1,11 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Resolver,
   Mutation,
   Args,
   ResolveField,
   Parent,
+  Query,
 } from '@nestjs/graphql';
 import { User, UserCreateInput } from '../../prisma/@generated';
 import { Auth, Token, UserLoginInput } from '../modules/auth/entities';
