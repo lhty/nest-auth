@@ -7,6 +7,7 @@ import {
   UpdateOneUserArgs,
   DeleteOneUserArgs,
 } from '../../prisma/@generated';
+import { GetUserFromReq } from '../decorators/user';
 import { UserService } from '../services/user.service';
 
 @Resolver(() => User)
@@ -16,6 +17,11 @@ export class UserResolver {
   @Query(() => User, { name: 'user' })
   async USER(@Args() credentials: FindUniqueUserArgs) {
     return this.userService.user(credentials);
+  }
+
+  @Query(() => User, { name: 'me' })
+  async ME(@GetUserFromReq() user: User) {
+    return user;
   }
 
   @Query(() => [User], { name: 'users' })

@@ -58,11 +58,11 @@ export class AuthService {
     }
   }
 
-  validateUser(id: number): Promise<User> {
+  async validateUser(id: number): Promise<User> {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  getUserFromToken(token: string): Promise<User> {
+  async getUserFromToken(token: string): Promise<User> {
     const id = this.jwtService.decode(token)['userId'];
     return this.prisma.user.findUnique({ where: { id } });
   }

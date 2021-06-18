@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/graphql';
 import { User, UserCreateInput } from '../../prisma/@generated';
+import { Public } from '../decorators/public';
 import { Auth, Token, UserLoginInput } from '../modules/auth/entities';
 import { AuthService } from '../services/auth.service';
 
@@ -15,11 +16,13 @@ import { AuthService } from '../services/auth.service';
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Mutation(() => Auth, { name: 'signup' })
   async SIGNUP(@Args('user') user: UserCreateInput) {
     return this.authService.createUser(user);
   }
 
+  @Public()
   @Mutation(() => Auth, { name: 'login' })
   async LOGIN(@Args('data') { email, password }: UserLoginInput) {
     return await this.authService.login(email.toLowerCase(), password);

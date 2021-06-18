@@ -54,6 +54,7 @@ type Auth {
 
 type Query {
   user(where: UserWhereUniqueInput!): User!
+  me: User!
   users(where: UserWhereInput, orderBy: [UserOrderByInput!], cursor: UserWhereUniqueInput, take: Int, skip: Int, distinct: [UserScalarFieldEnum!]): [User!]!
 }
 
@@ -148,21 +149,11 @@ enum UserScalarFieldEnum {
 }
 
 type Mutation {
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
-  deleteUser(where: UserWhereUniqueInput!): User!
   signup(user: UserCreateInput!): Auth!
   login(data: UserLoginInput!): Auth!
   refreshToken(token: String!): Token!
-}
-
-input UserUpdateInput {
-  email: StringFieldUpdateOperationsInput
-  name: StringFieldUpdateOperationsInput
-  pwd: StringFieldUpdateOperationsInput
-}
-
-input StringFieldUpdateOperationsInput {
-  set: String
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
+  deleteUser(where: UserWhereUniqueInput!): User!
 }
 
 input UserCreateInput {
@@ -174,4 +165,14 @@ input UserCreateInput {
 input UserLoginInput {
   email: String!
   password: String!
+}
+
+input UserUpdateInput {
+  email: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  pwd: StringFieldUpdateOperationsInput
+}
+
+input StringFieldUpdateOperationsInput {
+  set: String
 }
