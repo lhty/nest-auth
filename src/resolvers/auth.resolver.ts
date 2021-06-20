@@ -28,6 +28,7 @@ export class AuthResolver {
     return await this.authService.login(email.toLowerCase(), password);
   }
 
+  @Public()
   @Mutation(() => Token)
   async refreshToken(@Args('token') token: string) {
     return this.authService.refreshToken(token);

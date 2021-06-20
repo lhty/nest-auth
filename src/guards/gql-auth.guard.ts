@@ -7,9 +7,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
-
 @Injectable()
-export class JwtGuard extends AuthGuard('jwt') implements CanActivate {
+export class JwtGuard extends AuthGuard('jwt') {
   constructor(private readonly reflector: Reflector) {
     super();
   }
@@ -25,8 +24,8 @@ export class JwtGuard extends AuthGuard('jwt') implements CanActivate {
     try {
       await super.canActivate(context);
       return true;
-    } catch (e) {
-      throw new UnauthorizedException('access token expired');
+    } catch {
+      throw new UnauthorizedException();
     }
   }
 
