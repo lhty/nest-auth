@@ -1,4 +1,3 @@
-import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   User,
@@ -7,7 +6,7 @@ import {
   UpdateOneUserArgs,
   DeleteOneUserArgs,
 } from '../../prisma/@generated';
-import { GetUserFromReq } from '../decorators/user';
+import { GetUserFromReq } from '../common/decorators/user';
 import { UserService } from '../services/user.service';
 
 @Resolver(() => User)

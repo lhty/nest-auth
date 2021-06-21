@@ -5,7 +5,8 @@ import { PrismaService } from '../../config/prisma.service';
 import { AuthResolver } from '../../resolvers/auth.resolver';
 import { AuthService } from '../../services/auth.service';
 import { PasswordService } from '../../services/password.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtTokenStrategy } from './strategies/jwt-token.strategy';
+import { JwtUserStrategy } from './strategies/jwt-user.strategy';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     PasswordService,
     AuthService,
     AuthResolver,
-    JwtStrategy,
+    JwtUserStrategy,
+    JwtTokenStrategy,
   ],
   exports: [AuthService],
 })

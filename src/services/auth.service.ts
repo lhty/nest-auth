@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../config/prisma.service';
 import { Token } from '../modules/auth/entities';
+import { Jwt } from '../modules/auth/interfaces';
 import { PasswordService } from './password.service';
 
 @Injectable()
@@ -31,7 +32,7 @@ export class AuthService {
     }
 
     return this.generateTokens({
-      userId: user.id,
+      id: user.id,
     });
   }
 
@@ -44,7 +45,7 @@ export class AuthService {
         data: { ...user, pwd: hashPwd },
       });
       return this.generateTokens({
-        userId: new_user.id,
+        id: new_user.id,
       });
     } catch (error) {
       if (
@@ -63,22 +64,22 @@ export class AuthService {
   }
 
   async getUserFromToken(token: string): Promise<User> {
-    const id = this.jwtService.decode(token)['userId'];
+    const { id } = this.jwtService.decode(token) as Jwt;
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  generateTokens(payload: { userId: number }): Token {
+  generateTokens(payload: Partial<Jwt>): Token {
     return {
       accessToken: this.generateAccessToken(payload),
       refreshToken: this.generateRefreshToken(payload),
     };
   }
 
-  private generateAccessToken(payload: { userId: number }): string {
+  private generateAccessToken(payload: Partial<Jwt>): string {
     return this.jwtService.sign(payload);
   }
 
-  private generateRefreshToken(payload: { userId: number }): string {
+  private generateRefreshToken(payload: Partial<Jwt>): string {
     return this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_SECRET,
       expiresIn: process.env.JWT_REFRESH,
@@ -87,15 +88,15 @@ export class AuthService {
 
   refreshToken(token: string) {
     try {
-      const { userId } = this.jwtService.verify(token, {
+      const { id } = this.jwtService.verify(token, {
         secret: process.env.JWT_REFRESH_SECRET,
       });
 
       return this.generateTokens({
-        userId,
+        id,
       });
     } catch (e) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(e.message);
     }
   }
 }

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GqlConfigService } from './config/graphql.options';
-import { JwtGuard } from './guards/gql-auth.guard';
+import { JwtGuard } from './common/guards/gql-jwt.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user.module';
 
