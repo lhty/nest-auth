@@ -35,9 +35,24 @@ type User {
   name: String!
 }
 
+type Auth {
+  """JWT access token"""
+  accessToken: String!
+
+  """JWT refresh token"""
+  refreshToken: String!
+  user: User!
+}
+
 type Query {
-  userById(id: String!): User!
-  users(where: UserWhereInput): [User!]!
+  user(where: UserWhereUniqueInput!): User!
+  me: User!
+  users(where: UserWhereInput, orderBy: [UserOrderByInput!], cursor: UserWhereUniqueInput, take: Int, skip: Int, distinct: [UserScalarFieldEnum!]): [User!]!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+  email: String
 }
 
 input UserWhereInput {
@@ -106,12 +121,50 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input UserOrderByInput {
+  id: SortOrder
+  email: SortOrder
+  name: SortOrder
+  pwd: SortOrder
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+enum UserScalarFieldEnum {
+  id
+  email
+  name
+  pwd
+}
+
 type Mutation {
-  signup(data: UserCreateInput!): User!
+  signup(user: UserCreateInput!): Auth!
+  login(data: UserLoginInput!): Auth!
+  refreshToken(token: String!): Auth!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
+  deleteUser(where: UserWhereUniqueInput!): User!
 }
 
 input UserCreateInput {
   email: String!
   name: String!
   pwd: String!
+}
+
+input UserLoginInput {
+  email: String!
+  password: String!
+}
+
+input UserUpdateInput {
+  email: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  pwd: StringFieldUpdateOperationsInput
+}
+
+input StringFieldUpdateOperationsInput {
+  set: String
 }

@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GqlConfigService } from './config/graphql.options';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtTokenGuard } from './common/guards/gql-jwt.guard';
+import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user.module';
 
 @Module({
@@ -9,13 +11,14 @@ import { UserModule } from './modules/user.module';
     GraphQLModule.forRootAsync({
       useClass: GqlConfigService,
     }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
-    }),
+    AuthModule,
     UserModule,
   ],
-  controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtTokenGuard,
+    },
+  ],
 })
 export class AppModule {}

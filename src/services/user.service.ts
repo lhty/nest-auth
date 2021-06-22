@@ -6,42 +6,19 @@ import { PrismaService } from '../config/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async userById(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
-    });
+  async user(credentials: Prisma.UserFindUniqueArgs): Promise<User | null> {
+    return this.prisma.user.findUnique(credentials);
   }
 
   async users(params: Prisma.UserFindManyArgs): Promise<User[]> {
     return this.prisma.user.findMany(params);
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
-      data: {
-        email: data.email,
-        name: data.name,
-        pwd: data.pwd,
-      },
-    });
+  async updateUser(user: Prisma.UserUpdateArgs): Promise<User> {
+    return this.prisma.user.update(user);
   }
 
-  async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
-    const { where, data } = params;
-    return this.prisma.user.update({
-      data,
-      where,
-    });
-  }
-
-  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
-      where,
-    });
+  async deleteUser(user: Prisma.UserDeleteArgs): Promise<User> {
+    return this.prisma.user.delete(user);
   }
 }
