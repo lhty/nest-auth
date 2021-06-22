@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   User,
@@ -7,8 +8,10 @@ import {
   DeleteOneUserArgs,
 } from '../../prisma/@generated';
 import { GetUserFromReq } from '../common/decorators/user';
+import { JwtUserGuard } from '../common/guards/gql-jwt.guard';
 import { UserService } from '../services/user.service';
 
+@UseGuards(JwtUserGuard)
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}

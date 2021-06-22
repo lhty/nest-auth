@@ -11,7 +11,7 @@ import { token_errors } from '../errors/token_errors';
 
 /*TBD dynamic strategy swap */
 @Injectable()
-export class JwtGuard extends AuthGuard() {
+export class JwtTokenGuard extends AuthGuard('jwt-token-strategy') {
   constructor(private readonly reflector: Reflector) {
     super();
   }
@@ -43,6 +43,23 @@ export class JwtGuard extends AuthGuard() {
     if (isPublic) {
       return true;
     }
+    await super.canActivate(context);
+    return true;
+  }
+}
+
+@Injectable()
+export class JwtUserGuard extends AuthGuard('jwt-user-strategy') {
+  constructor() {
+    super();
+  }
+
+  getRequest(context: ExecutionContext): Request {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
+  }
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     await super.canActivate(context);
     return true;
   }
