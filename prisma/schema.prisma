@@ -11,15 +11,30 @@ generator client {
 }
 
 generator nestgraphql {
-  provider   = "node node_modules/prisma-nestjs-graphql"
-  output     = "./@generated"
-  emitSingle = true
+  provider               = "node node_modules/prisma-nestjs-graphql"
+  output                 = "./@generated"
+  emitSingle             = true
+  fields_Validator_from  = "class-validator"
+  fields_Validator_input = true
+  fields_Scalars_from    = "graphql-scalars"
+  fields_Scalars_input   = true
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+  id        Int      @id @default(autoincrement())
+  /// @FieldType('Scalars.GraphQLEmailAddress')
+  /// @Validator.IsEmail()
+  /// @Validator.IsNotEmpty()
+  email     String   @unique
+  /// @Validator.MinLength(3)
+  /// @Validator.MaxLength(50)
+  /// @Validator.IsNotEmpty()
+  /// @Validator.@IsAlpha()
+  name      String
+  /// @Validator.MinLength(5)
+  /// @Validator.MaxLength(50)
   /// @HideField()
-  pwd   String
+  pwd       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -58,9 +58,4 @@ export class JwtUserGuard extends AuthGuard('jwt-user-strategy') {
     const ctx = GqlExecutionContext.create(context);
     return ctx.getContext().req;
   }
-
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    await super.canActivate(context);
-    return true;
-  }
 }

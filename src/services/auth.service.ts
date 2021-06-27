@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
-import { PrismaService } from '../config/prisma.service';
+import { PrismaService } from './prisma.service';
 import { Token } from '../modules/auth/entities';
 import { Jwt } from '../modules/auth/interfaces';
 import { PasswordService } from './password.service';
@@ -60,12 +60,12 @@ export class AuthService {
   }
 
   async validateUser(id: number): Promise<User> {
-    return this.prisma.user.findUnique({ where: { id } });
+    return await this.prisma.user.findUnique({ where: { id } });
   }
 
   async getUserFromToken(token: string): Promise<User> {
     const { id } = this.jwtService.decode(token) as Jwt;
-    return this.prisma.user.findUnique({ where: { id } });
+    return await this.prisma.user.findUnique({ where: { id } });
   }
 
   generateTokens(payload: Partial<Jwt>): Token {
@@ -91,7 +91,6 @@ export class AuthService {
       const { id } = this.jwtService.verify(token, {
         secret: process.env.JWT_REFRESH_SECRET,
       });
-
       return this.generateTokens({
         id,
       });

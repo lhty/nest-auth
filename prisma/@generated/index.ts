@@ -6,13 +6,17 @@ import { Float } from '@nestjs/graphql';
 import { registerEnumType } from '@nestjs/graphql';
 import { ArgsType } from '@nestjs/graphql';
 import { HideField } from '@nestjs/graphql';
+import * as Scalars from 'graphql-scalars';
+import * as Validator from 'class-validator';
 import { ID } from '@nestjs/graphql';
 
 export enum UserScalarFieldEnum {
     id = "id",
     email = "email",
     name = "name",
-    pwd = "pwd"
+    pwd = "pwd",
+    createdAt = "createdAt",
+    updatedAt = "updatedAt"
 }
 
 export enum SortOrder {
@@ -33,6 +37,64 @@ registerEnumType(UserScalarFieldEnum, { name: 'UserScalarFieldEnum' })
 export class AffectedRows {
     @Field(() => Int, {nullable:false})
     count!: number;
+}
+
+@InputType()
+export class DateTimeFieldUpdateOperationsInput {
+    @Field(() => Date, {nullable:true})
+    set?: Date | string;
+}
+
+@InputType()
+export class DateTimeFilter {
+    @Field(() => Date, {nullable:true})
+    equals?: Date | string;
+    @Field(() => [Date], {nullable:true})
+    in?: Array<Date> | Array<string>;
+    @Field(() => [Date], {nullable:true})
+    notIn?: Array<Date> | Array<string>;
+    @Field(() => Date, {nullable:true})
+    lt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    lte?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gte?: Date | string;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    not?: InstanceType<typeof NestedDateTimeFilter>;
+}
+
+@InputType()
+export class DateTimeWithAggregatesFilter {
+    @Field(() => Date, {nullable:true})
+    equals?: Date | string;
+    @Field(() => [Date], {nullable:true})
+    in?: Array<Date> | Array<string>;
+    @Field(() => [Date], {nullable:true})
+    notIn?: Array<Date> | Array<string>;
+    @Field(() => Date, {nullable:true})
+    lt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    lte?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gte?: Date | string;
+    @Field(() => NestedDateTimeWithAggregatesFilter, {nullable:true})
+    not?: InstanceType<typeof NestedDateTimeWithAggregatesFilter>;
+    @Field(() => NestedIntFilter, {nullable:true})
+    _count?: InstanceType<typeof NestedIntFilter>;
+    @Field(() => NestedIntFilter, {nullable:true})
+    count?: InstanceType<typeof NestedIntFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    _min?: InstanceType<typeof NestedDateTimeFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    min?: InstanceType<typeof NestedDateTimeFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    _max?: InstanceType<typeof NestedDateTimeFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    max?: InstanceType<typeof NestedDateTimeFilter>;
 }
 
 @InputType()
@@ -107,6 +169,58 @@ export class IntWithAggregatesFilter {
     _max?: InstanceType<typeof NestedIntFilter>;
     @Field(() => NestedIntFilter, {nullable:true})
     max?: InstanceType<typeof NestedIntFilter>;
+}
+
+@InputType()
+export class NestedDateTimeFilter {
+    @Field(() => Date, {nullable:true})
+    equals?: Date | string;
+    @Field(() => [Date], {nullable:true})
+    in?: Array<Date> | Array<string>;
+    @Field(() => [Date], {nullable:true})
+    notIn?: Array<Date> | Array<string>;
+    @Field(() => Date, {nullable:true})
+    lt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    lte?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gte?: Date | string;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    not?: InstanceType<typeof NestedDateTimeFilter>;
+}
+
+@InputType()
+export class NestedDateTimeWithAggregatesFilter {
+    @Field(() => Date, {nullable:true})
+    equals?: Date | string;
+    @Field(() => [Date], {nullable:true})
+    in?: Array<Date> | Array<string>;
+    @Field(() => [Date], {nullable:true})
+    notIn?: Array<Date> | Array<string>;
+    @Field(() => Date, {nullable:true})
+    lt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    lte?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    gte?: Date | string;
+    @Field(() => NestedDateTimeWithAggregatesFilter, {nullable:true})
+    not?: InstanceType<typeof NestedDateTimeWithAggregatesFilter>;
+    @Field(() => NestedIntFilter, {nullable:true})
+    _count?: InstanceType<typeof NestedIntFilter>;
+    @Field(() => NestedIntFilter, {nullable:true})
+    count?: InstanceType<typeof NestedIntFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    _min?: InstanceType<typeof NestedDateTimeFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    min?: InstanceType<typeof NestedDateTimeFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    _max?: InstanceType<typeof NestedDateTimeFilter>;
+    @Field(() => NestedDateTimeFilter, {nullable:true})
+    max?: InstanceType<typeof NestedDateTimeFilter>;
 }
 
 @InputType()
@@ -488,6 +602,10 @@ export class UserCountAggregateInput {
     @Field(() => Boolean, {nullable:true})
     pwd?: true;
     @Field(() => Boolean, {nullable:true})
+    createdAt?: true;
+    @Field(() => Boolean, {nullable:true})
+    updatedAt?: true;
+    @Field(() => Boolean, {nullable:true})
     _all?: true;
 }
 
@@ -502,6 +620,10 @@ export class UserCountAggregate {
     @HideField()
     pwd!: number;
     @Field(() => Int, {nullable:false})
+    createdAt!: number;
+    @Field(() => Int, {nullable:false})
+    updatedAt!: number;
+    @Field(() => Int, {nullable:false})
     _all!: number;
 }
 
@@ -509,22 +631,44 @@ export class UserCountAggregate {
 export class UserCreateManyInput {
     @Field(() => Int, {nullable:true})
     id?: number;
-    @Field(() => String, {nullable:false})
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
+    @Validator.IsEmail()
+    @Validator.IsNotEmpty()
     email!: string;
     @Field(() => String, {nullable:false})
+    @Validator.MinLength(3)
+    @Validator.MaxLength(50)
+    @Validator.IsNotEmpty()
     name!: string;
     @Field(() => String, {nullable:false})
+    @Validator.MinLength(5)
+    @Validator.MaxLength(50)
     pwd!: string;
+    @Field(() => Date, {nullable:true})
+    createdAt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    updatedAt?: Date | string;
 }
 
 @InputType()
 export class UserCreateInput {
-    @Field(() => String, {nullable:false})
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
+    @Validator.IsEmail()
+    @Validator.IsNotEmpty()
     email!: string;
     @Field(() => String, {nullable:false})
+    @Validator.MinLength(3)
+    @Validator.MaxLength(50)
+    @Validator.IsNotEmpty()
     name!: string;
     @Field(() => String, {nullable:false})
+    @Validator.MinLength(5)
+    @Validator.MaxLength(50)
     pwd!: string;
+    @Field(() => Date, {nullable:true})
+    createdAt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    updatedAt?: Date | string;
 }
 
 @ArgsType()
@@ -563,6 +707,10 @@ export class UserGroupBy {
     name!: string;
     @HideField()
     pwd!: string;
+    @Field(() => Date, {nullable:false})
+    createdAt!: Date | string;
+    @Field(() => Date, {nullable:false})
+    updatedAt!: Date | string;
     @Field(() => UserCountAggregate, {nullable:true})
     _count?: InstanceType<typeof UserCountAggregate>;
     @Field(() => UserAvgAggregate, {nullable:true})
@@ -585,6 +733,10 @@ export class UserMaxAggregateInput {
     name?: true;
     @Field(() => Boolean, {nullable:true})
     pwd?: true;
+    @Field(() => Boolean, {nullable:true})
+    createdAt?: true;
+    @Field(() => Boolean, {nullable:true})
+    updatedAt?: true;
 }
 
 @ObjectType()
@@ -597,6 +749,10 @@ export class UserMaxAggregate {
     name?: string;
     @HideField()
     pwd?: string;
+    @Field(() => Date, {nullable:true})
+    createdAt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    updatedAt?: Date | string;
 }
 
 @InputType()
@@ -609,6 +765,10 @@ export class UserMinAggregateInput {
     name?: true;
     @Field(() => Boolean, {nullable:true})
     pwd?: true;
+    @Field(() => Boolean, {nullable:true})
+    createdAt?: true;
+    @Field(() => Boolean, {nullable:true})
+    updatedAt?: true;
 }
 
 @ObjectType()
@@ -621,6 +781,10 @@ export class UserMinAggregate {
     name?: string;
     @HideField()
     pwd?: string;
+    @Field(() => Date, {nullable:true})
+    createdAt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    updatedAt?: Date | string;
 }
 
 @InputType()
@@ -633,6 +797,10 @@ export class UserOrderByInput {
     name?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
     pwd?: SortOrder;
+    @Field(() => SortOrder, {nullable:true})
+    createdAt?: SortOrder;
+    @Field(() => SortOrder, {nullable:true})
+    updatedAt?: SortOrder;
 }
 
 @InputType()
@@ -651,6 +819,10 @@ export class UserScalarWhereWithAggregatesInput {
     name?: InstanceType<typeof StringWithAggregatesFilter>;
     @Field(() => StringWithAggregatesFilter, {nullable:true})
     pwd?: InstanceType<typeof StringWithAggregatesFilter>;
+    @Field(() => DateTimeWithAggregatesFilter, {nullable:true})
+    createdAt?: InstanceType<typeof DateTimeWithAggregatesFilter>;
+    @Field(() => DateTimeWithAggregatesFilter, {nullable:true})
+    updatedAt?: InstanceType<typeof DateTimeWithAggregatesFilter>;
 }
 
 @InputType()
@@ -669,12 +841,23 @@ export class UserSumAggregate {
 export class UserUncheckedCreateInput {
     @Field(() => Int, {nullable:true})
     id?: number;
-    @Field(() => String, {nullable:false})
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
+    @Validator.IsEmail()
+    @Validator.IsNotEmpty()
     email!: string;
     @Field(() => String, {nullable:false})
+    @Validator.MinLength(3)
+    @Validator.MaxLength(50)
+    @Validator.IsNotEmpty()
     name!: string;
     @Field(() => String, {nullable:false})
+    @Validator.MinLength(5)
+    @Validator.MaxLength(50)
     pwd!: string;
+    @Field(() => Date, {nullable:true})
+    createdAt?: Date | string;
+    @Field(() => Date, {nullable:true})
+    updatedAt?: Date | string;
 }
 
 @InputType()
@@ -687,6 +870,10 @@ export class UserUncheckedUpdateManyInput {
     name?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    updatedAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
 }
 
 @InputType()
@@ -699,6 +886,10 @@ export class UserUncheckedUpdateInput {
     name?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    updatedAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
 }
 
 @InputType()
@@ -709,6 +900,10 @@ export class UserUpdateManyMutationInput {
     name?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    updatedAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
 }
 
 @InputType()
@@ -719,13 +914,19 @@ export class UserUpdateInput {
     name?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    updatedAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
 }
 
 @InputType()
 export class UserWhereUniqueInput {
     @Field(() => Int, {nullable:true})
     id?: number;
-    @Field(() => String, {nullable:true})
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:true})
+    @Validator.IsEmail()
+    @Validator.IsNotEmpty()
     email?: string;
 }
 
@@ -745,6 +946,10 @@ export class UserWhereInput {
     name?: InstanceType<typeof StringFilter>;
     @Field(() => StringFilter, {nullable:true})
     pwd?: InstanceType<typeof StringFilter>;
+    @Field(() => DateTimeFilter, {nullable:true})
+    createdAt?: InstanceType<typeof DateTimeFilter>;
+    @Field(() => DateTimeFilter, {nullable:true})
+    updatedAt?: InstanceType<typeof DateTimeFilter>;
 }
 
 @ObjectType()
@@ -753,8 +958,12 @@ export class User {
     id!: number;
     @Field(() => String, {nullable:false})
     email!: string;
-    @Field(() => String, {nullable:false})
+    @Field(() => String, {nullable:false,description:'@Validator.@IsAlpha()'})
     name!: string;
     @HideField()
     pwd!: string;
+    @Field(() => Date, {nullable:false})
+    createdAt!: Date;
+    @Field(() => Date, {nullable:false})
+    updatedAt!: Date;
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { PrismaService } from '../config/prisma.service';
+import { PrismaService } from '../services/prisma.service';
 import { UserResolver } from '../resolvers/user.resolver';
 import { PasswordService } from '../services/password.service';
 import { UserService } from '../services/user.service';
