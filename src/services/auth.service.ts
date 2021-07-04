@@ -2,10 +2,9 @@ import {
   Injectable,
   BadRequestException,
   UnauthorizedException,
-  ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { PrismaService } from './prisma.service';
 import { Token } from '../modules/auth/entities';
 import { Jwt } from '../modules/auth/interfaces';
@@ -20,14 +19,15 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string): Promise<Token> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
-
-    const passwordValid = await this.passwordService.validatePassword(
-      password,
-      user.pwd,
-    );
-
-    if (!passwordValid || !user) {
+    const user = await this.prisma.profile
+      .findUnique({
+        where: { email },
+      })
+      .user();
+    if (
+      !user ||
+      !(await this.passwordService.validatePassword(password, user.pwd))
+    ) {
       throw new BadRequestException('Invalid credentials');
     }
 
@@ -36,31 +36,11 @@ export class AuthService {
     });
   }
 
-  async createUser(user: Prisma.UserCreateInput): Promise<Token> {
-    user.email = user.email.toLowerCase();
-    const hashPwd = await this.passwordService.hashPassword(user.pwd);
-
-    try {
-      const new_user = await this.prisma.user.create({
-        data: { ...user, pwd: hashPwd },
-      });
-      return this.generateTokens({
-        id: new_user.id,
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException(`Email ${user.email} already used.`);
-      } else {
-        throw new Error(error);
-      }
-    }
-  }
-
   async validateUser(id: number): Promise<User> {
-    return await this.prisma.user.findUnique({ where: { id } });
+    return await this.prisma.user.findUnique({
+      where: { id },
+      include: { profile: true },
+    });
   }
 
   async getUserFromToken(token: string): Promise<User> {

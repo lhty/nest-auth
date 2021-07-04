@@ -5,7 +5,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { User, UserCreateInput } from '../../prisma/@generated';
+import { User } from '../../prisma/@generated';
 import { Public } from '../common/decorators/public';
 import { Auth, UserLoginInput } from '../modules/auth/entities';
 import { AuthService } from '../services/auth.service';
@@ -14,11 +14,6 @@ import { AuthService } from '../services/auth.service';
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
-
-  @Mutation(() => Auth, { name: 'signup' })
-  async SIGNUP(@Args('user') user: UserCreateInput) {
-    return this.authService.createUser(user);
-  }
 
   @Mutation(() => Auth, { name: 'login' })
   async LOGIN(@Args('data') { email, password }: UserLoginInput) {

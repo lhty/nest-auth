@@ -50,10 +50,27 @@ export class JwtTokenGuard extends AuthGuard('jwt-token-strategy') {
 
 @Injectable()
 export class JwtUserGuard extends AuthGuard('jwt-user-strategy') {
-  constructor() {
+  constructor(private readonly reflector: Reflector) {
     super();
   }
+  getRequest(context: ExecutionContext): Request {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
+  }
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(
+      decorators.public,
+      [context.getHandler(), context.getClass()],
+    );
+    if (isPublic) {
+      return true;
+    }
+    await super.canActivate(context);
+    return true;
+  }
+}
 
+abstract class GqlGuard {
   getRequest(context: ExecutionContext): Request {
     const ctx = GqlExecutionContext.create(context);
     return ctx.getContext().req;

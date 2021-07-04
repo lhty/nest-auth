@@ -2,14 +2,59 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ProfileAvgAggregate {
+  id: Float
+}
+
+type ProfileCountAggregate {
+  id: Int!
+  email: Int!
+  phone: Int!
+  name: Int!
+  lastName: Int!
+  _all: Int!
+}
+
+type ProfileMaxAggregate {
+  id: Int
+  email: String
+  phone: String
+  name: String
+  lastName: String
+}
+
+type ProfileMinAggregate {
+  id: Int
+  email: String
+  phone: String
+  name: String
+  lastName: String
+}
+
+type ProfileSumAggregate {
+  id: Int
+}
+
+type Profile {
+  id: ID!
+  email: String!
+  phone: String
+
+  """@Validator.@IsAlpha()"""
+  name: String!
+
+  """@Validator.@IsAlpha()"""
+  lastName: String!
+  user: User
+}
+
 type UserAvgAggregate {
   id: Float
 }
 
 type UserCountAggregate {
   id: Int!
-  email: Int!
-  name: Int!
+  role: Int!
   createdAt: Int!
   updatedAt: Int!
   _all: Int!
@@ -17,10 +62,16 @@ type UserCountAggregate {
 
 type UserMaxAggregate {
   id: Int
-  email: String
-  name: String
+  role: Roles
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+enum Roles {
+  INACTIVE
+  REGULAR
+  ADVANCED
+  SU
 }
 
 """
@@ -30,8 +81,7 @@ scalar DateTime
 
 type UserMinAggregate {
   id: Int
-  email: String
-  name: String
+  role: Roles
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -42,10 +92,8 @@ type UserSumAggregate {
 
 type User {
   id: ID!
-  email: String!
-
-  """@Validator.@IsAlpha()"""
-  name: String!
+  role: Roles!
+  profile: Profile!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -67,22 +115,17 @@ type Query {
 
 input UserWhereUniqueInput {
   id: Int
-  email: EmailAddress
 }
-
-"""
-A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
-"""
-scalar EmailAddress @specifiedBy(url: "https://www.w3.org/Protocols/rfc822/")
 
 input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IntFilter
-  email: StringFilter
-  name: StringFilter
   pwd: StringFilter
+  role: EnumRolesFilter
+  profile: ProfileRelationFilter
+  profileId: IntFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
 }
@@ -143,6 +186,71 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input EnumRolesFilter {
+  equals: Roles
+  in: [Roles!]
+  notIn: [Roles!]
+  not: NestedEnumRolesFilter
+}
+
+input NestedEnumRolesFilter {
+  equals: Roles
+  in: [Roles!]
+  notIn: [Roles!]
+  not: NestedEnumRolesFilter
+}
+
+input ProfileRelationFilter {
+  is: ProfileWhereInput
+  isNot: ProfileWhereInput
+}
+
+input ProfileWhereInput {
+  AND: [ProfileWhereInput!]
+  OR: [ProfileWhereInput!]
+  NOT: [ProfileWhereInput!]
+  id: IntFilter
+  email: StringFilter
+  phone: StringNullableFilter
+  name: StringFilter
+  lastName: StringFilter
+  user: UserRelationFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input UserRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
 input DateTimeFilter {
   equals: DateTime
   in: [DateTime!]
@@ -167,9 +275,9 @@ input NestedDateTimeFilter {
 
 input UserOrderByInput {
   id: SortOrder
-  email: SortOrder
-  name: SortOrder
   pwd: SortOrder
+  role: SortOrder
+  profileId: SortOrder
   createdAt: SortOrder
   updatedAt: SortOrder
 }
@@ -181,27 +289,19 @@ enum SortOrder {
 
 enum UserScalarFieldEnum {
   id
-  email
-  name
   pwd
+  role
+  profileId
   createdAt
   updatedAt
 }
 
 type Mutation {
-  signup(user: UserCreateInput!): Auth!
   login(data: UserLoginInput!): Auth!
   refreshToken(token: String!): Auth!
+  createUser(user: UserCreateInput!): Auth!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User!
-}
-
-input UserCreateInput {
-  email: EmailAddress!
-  name: String!
-  pwd: String!
-  createdAt: DateTime
-  updatedAt: DateTime
 }
 
 input UserLoginInput {
@@ -209,18 +309,88 @@ input UserLoginInput {
   password: String!
 }
 
+input UserCreateInput {
+  pwd: String!
+  role: Roles
+  createdAt: DateTime
+  updatedAt: DateTime
+  profile: ProfileCreateNestedOneWithoutUserInput!
+}
+
+input ProfileCreateNestedOneWithoutUserInput {
+  create: ProfileCreateWithoutUserInput
+  connectOrCreate: ProfileCreateOrConnectWithoutUserInput
+  connect: ProfileWhereUniqueInput
+}
+
+input ProfileCreateWithoutUserInput {
+  email: EmailAddress!
+  phone: PhoneNumber
+  name: String!
+  lastName: String!
+}
+
+"""
+A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
+"""
+scalar EmailAddress @specifiedBy(url: "https://www.w3.org/Protocols/rfc822/")
+
+"""
+A field whose value conforms to the standard E.164 format as specified in: https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234.
+"""
+scalar PhoneNumber
+
+input ProfileCreateOrConnectWithoutUserInput {
+  where: ProfileWhereUniqueInput!
+  create: ProfileCreateWithoutUserInput!
+}
+
+input ProfileWhereUniqueInput {
+  id: Int
+  email: EmailAddress
+  phone: PhoneNumber
+}
+
 input UserUpdateInput {
-  email: StringFieldUpdateOperationsInput
-  name: StringFieldUpdateOperationsInput
   pwd: StringFieldUpdateOperationsInput
+  role: EnumRolesFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+  profile: ProfileUpdateOneRequiredWithoutUserInput
 }
 
 input StringFieldUpdateOperationsInput {
   set: String
 }
 
+input EnumRolesFieldUpdateOperationsInput {
+  set: Roles
+}
+
 input DateTimeFieldUpdateOperationsInput {
   set: DateTime
+}
+
+input ProfileUpdateOneRequiredWithoutUserInput {
+  create: ProfileCreateWithoutUserInput
+  connectOrCreate: ProfileCreateOrConnectWithoutUserInput
+  upsert: ProfileUpsertWithoutUserInput
+  connect: ProfileWhereUniqueInput
+  update: ProfileUpdateWithoutUserInput
+}
+
+input ProfileUpsertWithoutUserInput {
+  update: ProfileUpdateWithoutUserInput!
+  create: ProfileCreateWithoutUserInput!
+}
+
+input ProfileUpdateWithoutUserInput {
+  email: StringFieldUpdateOperationsInput
+  phone: NullableStringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  lastName: StringFieldUpdateOperationsInput
+}
+
+input NullableStringFieldUpdateOperationsInput {
+  set: String
 }

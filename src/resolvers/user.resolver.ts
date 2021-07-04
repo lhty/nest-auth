@@ -6,9 +6,12 @@ import {
   FindManyUserArgs,
   UpdateOneUserArgs,
   DeleteOneUserArgs,
+  UserCreateInput,
 } from '../../prisma/@generated';
+import { Public } from '../common/decorators/public';
 import { GetUserFromReq } from '../common/decorators/user';
 import { JwtUserGuard } from '../common/guards/gql-jwt.guard';
+import { Auth } from '../modules/auth/entities';
 import { UserService } from '../services/user.service';
 
 @UseGuards(JwtUserGuard)
@@ -29,6 +32,12 @@ export class UserResolver {
   @Query(() => [User], { name: 'users' })
   async USERS(@Args({ nullable: true }) params: FindManyUserArgs) {
     return this.userService.users(params);
+  }
+
+  @Public()
+  @Mutation(() => Auth, { name: 'createUser' })
+  async CREATE(@Args('user') user: UserCreateInput) {
+    return this.userService.createUser(user);
   }
 
   @Mutation(() => User, { name: 'updateUser' })

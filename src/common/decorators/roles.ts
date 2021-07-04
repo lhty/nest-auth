@@ -1,4 +1,10 @@
 import { SetMetadata } from '@nestjs/common';
-import { Roles } from '../../modules/auth/constants';
+
+enum Roles {
+  INACTIVE,
+  REGULAR,
+  ADVANCED,
+  SU,
+}
 
 export const RolesAllowed = (...roles: Roles[]) => SetMetadata('roles', roles);
