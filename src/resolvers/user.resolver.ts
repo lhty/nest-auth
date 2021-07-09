@@ -9,12 +9,12 @@ import {
   UserCreateInput,
 } from '../../prisma/@generated';
 import { Public } from '../common/decorators/public';
-import { GetUserFromReq } from '../common/decorators/user';
-import { JwtUserGuard } from '../common/guards/gql-jwt.guard';
+import { userIdFromReq } from '../common/decorators/userId';
+import { PermissionGuard } from '../common/guards/permission.guard';
 import { Auth } from '../modules/auth/entities';
 import { UserService } from '../services/user.service';
 
-@UseGuards(JwtUserGuard)
+@UseGuards(PermissionGuard)
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
@@ -25,8 +25,8 @@ export class UserResolver {
   }
 
   @Query(() => User, { name: 'me' })
-  async ME(@GetUserFromReq() user: User) {
-    return user;
+  async ME(@userIdFromReq() id: number) {
+    return await this.userService.user({ where: { id } });
   }
 
   @Query(() => [User], { name: 'users' })

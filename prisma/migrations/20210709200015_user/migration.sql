@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Roles" AS ENUM ('INACTIVE', 'REGULAR', 'ADVANCED', 'SU');
+CREATE TYPE "Roles" AS ENUM ('PASSWORD_REQUIRED', 'INACTIVE', 'REGULAR', 'ADVANCED', 'SU');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -18,7 +18,7 @@ CREATE TABLE "Profile" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT,
-    "name" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
 
     PRIMARY KEY ("id")

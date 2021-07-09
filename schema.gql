@@ -10,7 +10,7 @@ type ProfileCountAggregate {
   id: Int!
   email: Int!
   phone: Int!
-  name: Int!
+  firstName: Int!
   lastName: Int!
   _all: Int!
 }
@@ -19,7 +19,7 @@ type ProfileMaxAggregate {
   id: Int
   email: String
   phone: String
-  name: String
+  firstName: String
   lastName: String
 }
 
@@ -27,7 +27,7 @@ type ProfileMinAggregate {
   id: Int
   email: String
   phone: String
-  name: String
+  firstName: String
   lastName: String
 }
 
@@ -41,7 +41,7 @@ type Profile {
   phone: String
 
   """@Validator.@IsAlpha()"""
-  name: String!
+  firstName: String!
 
   """@Validator.@IsAlpha()"""
   lastName: String!
@@ -68,6 +68,7 @@ type UserMaxAggregate {
 }
 
 enum Roles {
+  PASSWORD_REQUIRED
   INACTIVE
   REGULAR
   ADVANCED
@@ -123,7 +124,6 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   id: IntFilter
   pwd: StringFilter
-  role: EnumRolesFilter
   profile: ProfileRelationFilter
   profileId: IntFilter
   createdAt: DateTimeFilter
@@ -186,20 +186,6 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input EnumRolesFilter {
-  equals: Roles
-  in: [Roles!]
-  notIn: [Roles!]
-  not: NestedEnumRolesFilter
-}
-
-input NestedEnumRolesFilter {
-  equals: Roles
-  in: [Roles!]
-  notIn: [Roles!]
-  not: NestedEnumRolesFilter
-}
-
 input ProfileRelationFilter {
   is: ProfileWhereInput
   isNot: ProfileWhereInput
@@ -212,7 +198,7 @@ input ProfileWhereInput {
   id: IntFilter
   email: StringFilter
   phone: StringNullableFilter
-  name: StringFilter
+  firstName: StringFilter
   lastName: StringFilter
   user: UserRelationFilter
 }
@@ -276,7 +262,6 @@ input NestedDateTimeFilter {
 input UserOrderByInput {
   id: SortOrder
   pwd: SortOrder
-  role: SortOrder
   profileId: SortOrder
   createdAt: SortOrder
   updatedAt: SortOrder
@@ -311,7 +296,6 @@ input UserLoginInput {
 
 input UserCreateInput {
   pwd: String!
-  role: Roles
   createdAt: DateTime
   updatedAt: DateTime
   profile: ProfileCreateNestedOneWithoutUserInput!
@@ -326,7 +310,7 @@ input ProfileCreateNestedOneWithoutUserInput {
 input ProfileCreateWithoutUserInput {
   email: EmailAddress!
   phone: PhoneNumber
-  name: String!
+  firstName: String!
   lastName: String!
 }
 
@@ -353,7 +337,6 @@ input ProfileWhereUniqueInput {
 
 input UserUpdateInput {
   pwd: StringFieldUpdateOperationsInput
-  role: EnumRolesFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   profile: ProfileUpdateOneRequiredWithoutUserInput
@@ -361,10 +344,6 @@ input UserUpdateInput {
 
 input StringFieldUpdateOperationsInput {
   set: String
-}
-
-input EnumRolesFieldUpdateOperationsInput {
-  set: Roles
 }
 
 input DateTimeFieldUpdateOperationsInput {
@@ -387,7 +366,7 @@ input ProfileUpsertWithoutUserInput {
 input ProfileUpdateWithoutUserInput {
   email: StringFieldUpdateOperationsInput
   phone: NullableStringFieldUpdateOperationsInput
-  name: StringFieldUpdateOperationsInput
+  firstName: StringFieldUpdateOperationsInput
   lastName: StringFieldUpdateOperationsInput
 }
 

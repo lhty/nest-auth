@@ -1,7 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
-import { JwtTokenGuard } from './common/guards/gql-jwt.guard';
+import { JwtGuard } from './common/guards/jwt.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user.module';
 import { GraphQLService } from './services/graphql.service';
@@ -17,7 +17,7 @@ import { GraphQLService } from './services/graphql.service';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtTokenGuard,
+      useClass: JwtGuard,
     },
     {
       provide: APP_PIPE,

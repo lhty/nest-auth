@@ -26,6 +26,7 @@ model User {
   /// @Validator.MaxLength(50)
   /// @HideField()
   pwd       String
+  /// @HideField({ output: false, input: true })
   role      Roles    @default(INACTIVE)
   profile   Profile  @relation(fields: [profileId], references: [id])
   /// @HideField()
@@ -35,28 +36,29 @@ model User {
 }
 
 model Profile {
-  id       Int     @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   /// @FieldType('Scalars.GraphQLEmailAddress')
   /// @Validator.IsEmail()
   /// @Validator.IsNotEmpty()
-  email    String  @unique
+  email     String  @unique
   /// @FieldType('Scalars.GraphQLPhoneNumber')
   /// @Validator.IsPhoneNumber()
   /// @Validator.IsNotEmpty()
-  phone    String? @unique
+  phone     String? @unique
   /// @Validator.MinLength(3)
   /// @Validator.MaxLength(50)
   /// @Validator.IsNotEmpty()
   /// @Validator.@IsAlpha()
-  name     String
+  firstName String
   /// @Validator.MaxLength(50)
   /// @Validator.IsNotEmpty()
   /// @Validator.@IsAlpha()
-  lastName String
-  user     User?
+  lastName  String
+  user      User?
 }
 
 enum Roles {
+  PASSWORD_REQUIRED
   INACTIVE
   REGULAR
   ADVANCED

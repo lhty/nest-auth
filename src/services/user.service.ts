@@ -18,7 +18,7 @@ export class UserService {
   }
 
   async users(params: Prisma.UserFindManyArgs): Promise<User[]> {
-    return this.prisma.user.findMany(params);
+    return this.prisma.user.findMany({ ...params, include: { profile: true } });
   }
 
   async createUser(
