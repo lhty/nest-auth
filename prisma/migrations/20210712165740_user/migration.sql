@@ -16,10 +16,13 @@ CREATE TABLE "User" (
 CREATE TABLE "Profile" (
     "email" TEXT NOT NULL,
     "role" "Roles" NOT NULL DEFAULT E'INACTIVE',
-    "phone" TEXT,
+    "phone" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_unique" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Profile.email_unique" ON "Profile"("email");

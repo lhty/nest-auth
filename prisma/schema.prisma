@@ -15,6 +15,7 @@ generator nestgraphql {
   output                 = "./@generated"
   emitSingle             = true
   purgeOutput            = true
+  combineScalarFilters   = true
   fields_Validator_from  = "class-validator"
   fields_Validator_input = true
   fields_Scalars_from    = "graphql-scalars"
@@ -34,17 +35,18 @@ model User {
 }
 
 model Profile {
-  email     String  @unique
-  User      User?
-  /// @FieldType('Scalars.GraphQLPhoneNumber')
-  /// @Validator.IsPhoneNumber()
-  /// @Validator.IsNotEmpty()
-  /// @HideField({ output: false, input: true })
-  role      Roles   @default(INACTIVE)
   /// @FieldType('Scalars.GraphQLEmailAddress')
   /// @Validator.IsEmail()
   /// @Validator.IsNotEmpty()
-  phone     String? @unique
+  email     String @unique
+  /// @HideField()
+  User      User?
+  /// @HideField({ output: false, input: true })
+  role      Roles  @default(INACTIVE)
+  /// @FieldType('Scalars.GraphQLPhoneNumber')
+  /// @Validator.IsPhoneNumber()
+  /// @Validator.IsNotEmpty()
+  phone     String @unique
   /// @Validator.MinLength(3)
   /// @Validator.MaxLength(50)
   /// @Validator.IsNotEmpty()

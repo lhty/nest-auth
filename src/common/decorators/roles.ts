@@ -1,10 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
-
-enum Roles {
-  INACTIVE,
-  REGULAR,
-  ADVANCED,
-  SU,
-}
+import { Roles } from '../../../prisma/@generated';
 
 export const RolesAllowed = (...roles: Roles[]) => SetMetadata('roles', roles);

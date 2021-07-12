@@ -14,6 +14,7 @@ export class GraphQLService implements GqlOptionsFactory {
       }),
       formatError: (error) => error.extensions.exception.response,
       autoSchemaFile: './schema.gql',
+      sortSchema: true,
     };
   }
 }

@@ -1,27 +1,33 @@
-// import { PrismaClient } from '@prisma/client';
-// import * as dotenv from 'dotenv';
-// import { hash } from 'argon2';
+import { PrismaClient } from '@prisma/client';
+import * as dotenv from 'dotenv';
+import { hash } from 'argon2';
+import { Roles } from './@generated';
 
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
-// const seedData = [
-//   { name: 'admin', email: 'admin1@mail.com', password: 'admin', role: 3 },
-// ];
+const seedData = {
+  pwd: 'admin',
+  profile: {
+    create: {
+      email: 'admin1@mail.com',
+      role: Roles.SU,
+      phone: '22323232323',
+      firstName: 'admin',
+      lastName: 'admin',
+    },
+  },
+};
+async function main() {
+  console.log('Seeding...');
+  dotenv.config();
 
-// async function main() {
-//   console.log('Seeding...');
-//   dotenv.config();
+  const data = seedData;
+  data.pwd = await hash(data.pwd);
+  await prisma.user.create({ data });
+}
 
-//   await prisma.user.create({
-//     data: {
-//       profile: { name: 'admin', email: 'admin1@mail.com' },
-//       pwd: await hash('admin'),
-//     },
-//   });
-// }
-
-// main()
-//   .catch((e) => console.error(e))
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });
+main()
+  .catch((e) => console.error(e))
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

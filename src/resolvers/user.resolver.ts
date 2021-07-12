@@ -6,12 +6,12 @@ import {
   FindManyUserArgs,
   UpdateOneUserArgs,
   DeleteOneUserArgs,
-  UserCreateInput,
 } from '../../prisma/@generated';
 import { Public } from '../common/decorators/public';
 import { userIdFromReq } from '../common/decorators/userId';
 import { PermissionGuard } from '../common/guards/permission.guard';
 import { Auth } from '../modules/auth/dto';
+import { UserWithProfileInput } from '../modules/user/dto';
 import { UserService } from '../services/user.service';
 
 @UseGuards(PermissionGuard)
@@ -36,7 +36,7 @@ export class UserResolver {
 
   @Public()
   @Mutation(() => Auth, { name: 'createUser' })
-  async CREATE(@Args('user') user: UserCreateInput) {
+  async CREATE(@Args('user') user: UserWithProfileInput) {
     return this.userService.createUser(user);
   }
 
@@ -45,7 +45,7 @@ export class UserResolver {
     return this.userService.updateUser(user);
   }
 
-  @Mutation(() => User, { name: 'deleteUser' })
+  @Mutation(() => Boolean, { name: 'deleteUser' })
   async DELETE(@Args() user: DeleteOneUserArgs) {
     return this.userService.deleteUser(user);
   }

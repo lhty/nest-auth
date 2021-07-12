@@ -1,6 +1,8 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
+import { DeleteOneUserArgs, UpdateOneUserArgs } from '../../prisma/@generated';
 import { Token } from '../modules/auth/dto';
+import { UserWithProfileInput } from '../modules/user/dto';
 import { AuthService } from './auth.service';
 import { PasswordService } from './password.service';
 import { PrismaService } from './prisma.service';
@@ -22,46 +24,43 @@ export class UserService {
   }
 
   async createUser(
-    user: Prisma.UserCreateInput,
+    input: UserWithProfileInput,
   ): Promise<Token & { user: User }> {
+    input.pwd = await this.passwordService.hashPassword(input.pwd);
+    input.email = input.email.toLowerCase();
+    const { pwd, ...profile } = input;
+    const data = { pwd, profile: { create: profile } };
     try {
       const new_user = await this.prisma.user.create({
-        data: {
-          ...user,
-          profile: {
-            create: {
-              ...user.profile.create,
-              email: user.profile.create.email.toLowerCase(),
-            },
-          },
-          pwd: await this.passwordService.hashPassword(user.pwd),
-        },
+        data,
+      });
+      console.log(new_user);
+      const tokens = this.authService.generateTokens({
+        id: new_user.id,
       });
       return {
-        ...this.authService.generateTokens({
-          id: new_user.id,
-        }),
+        ...tokens,
         user: new_user,
       };
-    } catch (error) {
+    } catch (err) {
       if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
       ) {
-        throw new ConflictException(
-          `Email ${user.profile.create.email} already used.`,
-        );
+        throw new ConflictException(`Email ${profile.email} already used.`);
       } else {
-        throw new Error(error);
+        console.log(err);
+        throw new Error(err);
       }
     }
   }
 
-  async updateUser(user: Prisma.UserUpdateArgs): Promise<User> {
-    return this.prisma.user.update(user);
+  async updateUser(input: UpdateOneUserArgs): Promise<User> {
+    return await this.prisma.user.update(input);
   }
 
-  async deleteUser(user: Prisma.UserDeleteArgs): Promise<User> {
-    return this.prisma.user.delete(user);
+  async deleteUser(user: DeleteOneUserArgs): Promise<Boolean> {
+    const result = await this.prisma.user.delete(user);
+    return !!result;
   }
 }
