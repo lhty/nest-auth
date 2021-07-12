@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   ContextType,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
@@ -35,7 +36,10 @@ export class PermissionGuard implements CanActivate {
     }
     const { id } = this.getRequest(context).user;
     const user = await this.userService.user({ where: { id } });
-    console.log('user: ', JSON.stringify(user.role));
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    console.log('user: ', JSON.stringify(user));
     return true;
   }
 }

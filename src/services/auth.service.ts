@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { PrismaService } from './prisma.service';
-import { Token } from '../modules/auth/entities';
+import { Token } from '../modules/auth/dto';
 import { Jwt } from '../modules/auth/interfaces';
 import { PasswordService } from './password.service';
 
@@ -23,7 +23,7 @@ export class AuthService {
       .findUnique({
         where: { email },
       })
-      .user();
+      .User();
     if (
       !user ||
       !(await this.passwordService.validatePassword(password, user.pwd))

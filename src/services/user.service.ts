@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
-import { Token } from '../modules/auth/entities';
+import { Token } from '../modules/auth/dto';
 import { AuthService } from './auth.service';
 import { PasswordService } from './password.service';
 import { PrismaService } from './prisma.service';

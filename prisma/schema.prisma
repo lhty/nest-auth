@@ -14,6 +14,7 @@ generator nestgraphql {
   provider               = "node node_modules/prisma-nestjs-graphql"
   output                 = "./@generated"
   emitSingle             = true
+  purgeOutput            = true
   fields_Validator_from  = "class-validator"
   fields_Validator_input = true
   fields_Scalars_from    = "graphql-scalars"
@@ -26,23 +27,22 @@ model User {
   /// @Validator.MaxLength(50)
   /// @HideField()
   pwd       String
-  /// @HideField({ output: false, input: true })
-  role      Roles    @default(INACTIVE)
-  profile   Profile  @relation(fields: [profileId], references: [id])
-  /// @HideField()
-  profileId Int
+  email     String
+  profile   Profile  @relation(fields: [email], references: [email])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Profile {
-  id        Int     @id @default(autoincrement())
-  /// @FieldType('Scalars.GraphQLEmailAddress')
-  /// @Validator.IsEmail()
-  /// @Validator.IsNotEmpty()
   email     String  @unique
+  User      User?
   /// @FieldType('Scalars.GraphQLPhoneNumber')
   /// @Validator.IsPhoneNumber()
+  /// @Validator.IsNotEmpty()
+  /// @HideField({ output: false, input: true })
+  role      Roles   @default(INACTIVE)
+  /// @FieldType('Scalars.GraphQLEmailAddress')
+  /// @Validator.IsEmail()
   /// @Validator.IsNotEmpty()
   phone     String? @unique
   /// @Validator.MinLength(3)
@@ -54,7 +54,6 @@ model Profile {
   /// @Validator.IsNotEmpty()
   /// @Validator.@IsAlpha()
   lastName  String
-  user      User?
 }
 
 enum Roles {

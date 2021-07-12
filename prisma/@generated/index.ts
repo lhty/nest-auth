@@ -5,23 +5,22 @@ import { InputType } from '@nestjs/graphql';
 import { Float } from '@nestjs/graphql';
 import { ArgsType } from '@nestjs/graphql';
 import { registerEnumType } from '@nestjs/graphql';
+import { HideField } from '@nestjs/graphql';
 import * as Scalars from 'graphql-scalars';
 import * as Validator from 'class-validator';
 import { ID } from '@nestjs/graphql';
-import { HideField } from '@nestjs/graphql';
 
 export enum UserScalarFieldEnum {
     id = "id",
     pwd = "pwd",
-    role = "role",
-    profileId = "profileId",
+    email = "email",
     createdAt = "createdAt",
     updatedAt = "updatedAt"
 }
 
 export enum ProfileScalarFieldEnum {
-    id = "id",
     email = "email",
+    role = "role",
     phone = "phone",
     firstName = "firstName",
     lastName = "lastName"
@@ -567,10 +566,6 @@ export class ProfileAggregateArgs {
     skip?: number;
     @Field(() => ProfileCountAggregateInput, {nullable:true})
     _count?: InstanceType<typeof ProfileCountAggregateInput>;
-    @Field(() => ProfileAvgAggregateInput, {nullable:true})
-    _avg?: InstanceType<typeof ProfileAvgAggregateInput>;
-    @Field(() => ProfileSumAggregateInput, {nullable:true})
-    _sum?: InstanceType<typeof ProfileSumAggregateInput>;
     @Field(() => ProfileMinAggregateInput, {nullable:true})
     _min?: InstanceType<typeof ProfileMinAggregateInput>;
     @Field(() => ProfileMaxAggregateInput, {nullable:true})
@@ -749,14 +744,6 @@ export class AggregateProfile {
     _count?: InstanceType<typeof ProfileCountAggregate>;
     @Field(() => ProfileCountAggregate, {nullable:true})
     count?: InstanceType<typeof ProfileCountAggregate>;
-    @Field(() => ProfileAvgAggregate, {nullable:true})
-    _avg?: InstanceType<typeof ProfileAvgAggregate>;
-    @Field(() => ProfileAvgAggregate, {nullable:true})
-    avg?: InstanceType<typeof ProfileAvgAggregate>;
-    @Field(() => ProfileSumAggregate, {nullable:true})
-    _sum?: InstanceType<typeof ProfileSumAggregate>;
-    @Field(() => ProfileSumAggregate, {nullable:true})
-    sum?: InstanceType<typeof ProfileSumAggregate>;
     @Field(() => ProfileMinAggregate, {nullable:true})
     _min?: InstanceType<typeof ProfileMinAggregate>;
     @Field(() => ProfileMinAggregate, {nullable:true})
@@ -832,23 +819,11 @@ export class FindUniqueProfileArgs {
 }
 
 @InputType()
-export class ProfileAvgAggregateInput {
-    @Field(() => Boolean, {nullable:true})
-    id?: true;
-}
-
-@ObjectType()
-export class ProfileAvgAggregate {
-    @Field(() => Float, {nullable:true})
-    id?: number;
-}
-
-@InputType()
 export class ProfileCountAggregateInput {
     @Field(() => Boolean, {nullable:true})
-    id?: true;
-    @Field(() => Boolean, {nullable:true})
     email?: true;
+    @HideField()
+    role?: true;
     @Field(() => Boolean, {nullable:true})
     phone?: true;
     @Field(() => Boolean, {nullable:true})
@@ -862,9 +837,9 @@ export class ProfileCountAggregateInput {
 @ObjectType()
 export class ProfileCountAggregate {
     @Field(() => Int, {nullable:false})
-    id!: number;
-    @Field(() => Int, {nullable:false})
     email!: number;
+    @Field(() => Int, {nullable:false})
+    role!: number;
     @Field(() => Int, {nullable:false})
     phone!: number;
     @Field(() => Int, {nullable:false})
@@ -877,14 +852,12 @@ export class ProfileCountAggregate {
 
 @InputType()
 export class ProfileCreateManyInput {
-    @Field(() => Int, {nullable:true})
-    id?: number;
-    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
-    @Validator.IsEmail()
-    @Validator.IsNotEmpty()
+    @Field(() => String, {nullable:false})
     email!: string;
-    @Field(() => Scalars.GraphQLPhoneNumber, {nullable:true})
-    @Validator.IsPhoneNumber()
+    @HideField()
+    role?: Roles;
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:true})
+    @Validator.IsEmail()
     @Validator.IsNotEmpty()
     phone?: string;
     @Field(() => String, {nullable:false})
@@ -918,12 +891,12 @@ export class ProfileCreateOrConnectWithoutUserInput {
 
 @InputType()
 export class ProfileCreateWithoutUserInput {
-    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
-    @Validator.IsEmail()
-    @Validator.IsNotEmpty()
+    @Field(() => String, {nullable:false})
     email!: string;
-    @Field(() => Scalars.GraphQLPhoneNumber, {nullable:true})
-    @Validator.IsPhoneNumber()
+    @HideField()
+    role?: Roles;
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:true})
+    @Validator.IsEmail()
     @Validator.IsNotEmpty()
     phone?: string;
     @Field(() => String, {nullable:false})
@@ -939,12 +912,12 @@ export class ProfileCreateWithoutUserInput {
 
 @InputType()
 export class ProfileCreateInput {
-    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
-    @Validator.IsEmail()
-    @Validator.IsNotEmpty()
+    @Field(() => String, {nullable:false})
     email!: string;
-    @Field(() => Scalars.GraphQLPhoneNumber, {nullable:true})
-    @Validator.IsPhoneNumber()
+    @HideField()
+    role?: Roles;
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:true})
+    @Validator.IsEmail()
     @Validator.IsNotEmpty()
     phone?: string;
     @Field(() => String, {nullable:false})
@@ -957,7 +930,7 @@ export class ProfileCreateInput {
     @Validator.IsNotEmpty()
     lastName!: string;
     @Field(() => UserCreateNestedOneWithoutProfileInput, {nullable:true})
-    user?: InstanceType<typeof UserCreateNestedOneWithoutProfileInput>;
+    User?: InstanceType<typeof UserCreateNestedOneWithoutProfileInput>;
 }
 
 @ArgsType()
@@ -976,10 +949,6 @@ export class ProfileGroupByArgs {
     skip?: number;
     @Field(() => ProfileCountAggregateInput, {nullable:true})
     _count?: InstanceType<typeof ProfileCountAggregateInput>;
-    @Field(() => ProfileAvgAggregateInput, {nullable:true})
-    _avg?: InstanceType<typeof ProfileAvgAggregateInput>;
-    @Field(() => ProfileSumAggregateInput, {nullable:true})
-    _sum?: InstanceType<typeof ProfileSumAggregateInput>;
     @Field(() => ProfileMinAggregateInput, {nullable:true})
     _min?: InstanceType<typeof ProfileMinAggregateInput>;
     @Field(() => ProfileMaxAggregateInput, {nullable:true})
@@ -988,10 +957,10 @@ export class ProfileGroupByArgs {
 
 @ObjectType()
 export class ProfileGroupBy {
-    @Field(() => Int, {nullable:false})
-    id!: number;
     @Field(() => String, {nullable:false})
     email!: string;
+    @Field(() => Roles, {nullable:false})
+    role!: Roles;
     @Field(() => String, {nullable:true})
     phone?: string;
     @Field(() => String, {nullable:false})
@@ -1000,10 +969,6 @@ export class ProfileGroupBy {
     lastName!: string;
     @Field(() => ProfileCountAggregate, {nullable:true})
     _count?: InstanceType<typeof ProfileCountAggregate>;
-    @Field(() => ProfileAvgAggregate, {nullable:true})
-    _avg?: InstanceType<typeof ProfileAvgAggregate>;
-    @Field(() => ProfileSumAggregate, {nullable:true})
-    _sum?: InstanceType<typeof ProfileSumAggregate>;
     @Field(() => ProfileMinAggregate, {nullable:true})
     _min?: InstanceType<typeof ProfileMinAggregate>;
     @Field(() => ProfileMaxAggregate, {nullable:true})
@@ -1013,9 +978,9 @@ export class ProfileGroupBy {
 @InputType()
 export class ProfileMaxAggregateInput {
     @Field(() => Boolean, {nullable:true})
-    id?: true;
-    @Field(() => Boolean, {nullable:true})
     email?: true;
+    @HideField()
+    role?: true;
     @Field(() => Boolean, {nullable:true})
     phone?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1026,10 +991,10 @@ export class ProfileMaxAggregateInput {
 
 @ObjectType()
 export class ProfileMaxAggregate {
-    @Field(() => Int, {nullable:true})
-    id?: number;
     @Field(() => String, {nullable:true})
     email?: string;
+    @Field(() => Roles, {nullable:true})
+    role?: Roles;
     @Field(() => String, {nullable:true})
     phone?: string;
     @Field(() => String, {nullable:true})
@@ -1041,9 +1006,9 @@ export class ProfileMaxAggregate {
 @InputType()
 export class ProfileMinAggregateInput {
     @Field(() => Boolean, {nullable:true})
-    id?: true;
-    @Field(() => Boolean, {nullable:true})
     email?: true;
+    @HideField()
+    role?: true;
     @Field(() => Boolean, {nullable:true})
     phone?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1054,10 +1019,10 @@ export class ProfileMinAggregateInput {
 
 @ObjectType()
 export class ProfileMinAggregate {
-    @Field(() => Int, {nullable:true})
-    id?: number;
     @Field(() => String, {nullable:true})
     email?: string;
+    @Field(() => Roles, {nullable:true})
+    role?: Roles;
     @Field(() => String, {nullable:true})
     phone?: string;
     @Field(() => String, {nullable:true})
@@ -1069,9 +1034,9 @@ export class ProfileMinAggregate {
 @InputType()
 export class ProfileOrderByInput {
     @Field(() => SortOrder, {nullable:true})
-    id?: SortOrder;
-    @Field(() => SortOrder, {nullable:true})
     email?: SortOrder;
+    @HideField()
+    role?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
     phone?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
@@ -1096,10 +1061,10 @@ export class ProfileScalarWhereWithAggregatesInput {
     OR?: Array<ProfileScalarWhereWithAggregatesInput>;
     @Field(() => [ProfileScalarWhereWithAggregatesInput], {nullable:true})
     NOT?: Array<ProfileScalarWhereWithAggregatesInput>;
-    @Field(() => IntWithAggregatesFilter, {nullable:true})
-    id?: InstanceType<typeof IntWithAggregatesFilter>;
     @Field(() => StringWithAggregatesFilter, {nullable:true})
     email?: InstanceType<typeof StringWithAggregatesFilter>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesWithAggregatesFilter>;
     @Field(() => StringNullableWithAggregatesFilter, {nullable:true})
     phone?: InstanceType<typeof StringNullableWithAggregatesFilter>;
     @Field(() => StringWithAggregatesFilter, {nullable:true})
@@ -1109,27 +1074,13 @@ export class ProfileScalarWhereWithAggregatesInput {
 }
 
 @InputType()
-export class ProfileSumAggregateInput {
-    @Field(() => Boolean, {nullable:true})
-    id?: true;
-}
-
-@ObjectType()
-export class ProfileSumAggregate {
-    @Field(() => Int, {nullable:true})
-    id?: number;
-}
-
-@InputType()
 export class ProfileUncheckedCreateWithoutUserInput {
-    @Field(() => Int, {nullable:true})
-    id?: number;
-    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
-    @Validator.IsEmail()
-    @Validator.IsNotEmpty()
+    @Field(() => String, {nullable:false})
     email!: string;
-    @Field(() => Scalars.GraphQLPhoneNumber, {nullable:true})
-    @Validator.IsPhoneNumber()
+    @HideField()
+    role?: Roles;
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:true})
+    @Validator.IsEmail()
     @Validator.IsNotEmpty()
     phone?: string;
     @Field(() => String, {nullable:false})
@@ -1145,14 +1096,12 @@ export class ProfileUncheckedCreateWithoutUserInput {
 
 @InputType()
 export class ProfileUncheckedCreateInput {
-    @Field(() => Int, {nullable:true})
-    id?: number;
-    @Field(() => Scalars.GraphQLEmailAddress, {nullable:false})
-    @Validator.IsEmail()
-    @Validator.IsNotEmpty()
+    @Field(() => String, {nullable:false})
     email!: string;
-    @Field(() => Scalars.GraphQLPhoneNumber, {nullable:true})
-    @Validator.IsPhoneNumber()
+    @HideField()
+    role?: Roles;
+    @Field(() => Scalars.GraphQLEmailAddress, {nullable:true})
+    @Validator.IsEmail()
     @Validator.IsNotEmpty()
     phone?: string;
     @Field(() => String, {nullable:false})
@@ -1165,15 +1114,15 @@ export class ProfileUncheckedCreateInput {
     @Validator.IsNotEmpty()
     lastName!: string;
     @Field(() => UserUncheckedCreateNestedOneWithoutProfileInput, {nullable:true})
-    user?: InstanceType<typeof UserUncheckedCreateNestedOneWithoutProfileInput>;
+    User?: InstanceType<typeof UserUncheckedCreateNestedOneWithoutProfileInput>;
 }
 
 @InputType()
 export class ProfileUncheckedUpdateManyInput {
-    @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
-    id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     phone?: InstanceType<typeof NullableStringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
@@ -1184,10 +1133,10 @@ export class ProfileUncheckedUpdateManyInput {
 
 @InputType()
 export class ProfileUncheckedUpdateWithoutUserInput {
-    @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
-    id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     phone?: InstanceType<typeof NullableStringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
@@ -1198,10 +1147,10 @@ export class ProfileUncheckedUpdateWithoutUserInput {
 
 @InputType()
 export class ProfileUncheckedUpdateInput {
-    @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
-    id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     phone?: InstanceType<typeof NullableStringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
@@ -1209,13 +1158,15 @@ export class ProfileUncheckedUpdateInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     lastName?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => UserUncheckedUpdateOneWithoutProfileInput, {nullable:true})
-    user?: InstanceType<typeof UserUncheckedUpdateOneWithoutProfileInput>;
+    User?: InstanceType<typeof UserUncheckedUpdateOneWithoutProfileInput>;
 }
 
 @InputType()
 export class ProfileUpdateManyMutationInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     phone?: InstanceType<typeof NullableStringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
@@ -1242,6 +1193,8 @@ export class ProfileUpdateOneRequiredWithoutUserInput {
 export class ProfileUpdateWithoutUserInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     phone?: InstanceType<typeof NullableStringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
@@ -1254,6 +1207,8 @@ export class ProfileUpdateWithoutUserInput {
 export class ProfileUpdateInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     phone?: InstanceType<typeof NullableStringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
@@ -1261,7 +1216,7 @@ export class ProfileUpdateInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     lastName?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => UserUpdateOneWithoutProfileInput, {nullable:true})
-    user?: InstanceType<typeof UserUpdateOneWithoutProfileInput>;
+    User?: InstanceType<typeof UserUpdateOneWithoutProfileInput>;
 }
 
 @InputType()
@@ -1274,14 +1229,10 @@ export class ProfileUpsertWithoutUserInput {
 
 @InputType()
 export class ProfileWhereUniqueInput {
-    @Field(() => Int, {nullable:true})
-    id?: number;
+    @Field(() => String, {nullable:true})
+    email?: string;
     @Field(() => Scalars.GraphQLEmailAddress, {nullable:true})
     @Validator.IsEmail()
-    @Validator.IsNotEmpty()
-    email?: string;
-    @Field(() => Scalars.GraphQLPhoneNumber, {nullable:true})
-    @Validator.IsPhoneNumber()
     @Validator.IsNotEmpty()
     phone?: string;
 }
@@ -1294,34 +1245,34 @@ export class ProfileWhereInput {
     OR?: Array<ProfileWhereInput>;
     @Field(() => [ProfileWhereInput], {nullable:true})
     NOT?: Array<ProfileWhereInput>;
-    @Field(() => IntFilter, {nullable:true})
-    id?: InstanceType<typeof IntFilter>;
     @Field(() => StringFilter, {nullable:true})
     email?: InstanceType<typeof StringFilter>;
+    @Field(() => UserWhereInput, {nullable:true})
+    User?: InstanceType<typeof UserWhereInput>;
+    @HideField()
+    role?: InstanceType<typeof EnumRolesFilter>;
     @Field(() => StringNullableFilter, {nullable:true})
     phone?: InstanceType<typeof StringNullableFilter>;
     @Field(() => StringFilter, {nullable:true})
     firstName?: InstanceType<typeof StringFilter>;
     @Field(() => StringFilter, {nullable:true})
     lastName?: InstanceType<typeof StringFilter>;
-    @Field(() => UserRelationFilter, {nullable:true})
-    user?: InstanceType<typeof UserRelationFilter>;
 }
 
 @ObjectType()
 export class Profile {
-    @Field(() => ID, {nullable:false})
-    id!: number;
     @Field(() => String, {nullable:false})
     email!: string;
+    @Field(() => User, {nullable:true})
+    User!: InstanceType<typeof User>;
+    @Field(() => Roles, {nullable:false,defaultValue:'INACTIVE'})
+    role!: Roles;
     @Field(() => String, {nullable:true})
     phone!: string | null;
     @Field(() => String, {nullable:false,description:'@Validator.@IsAlpha()'})
     firstName!: string;
     @Field(() => String, {nullable:false,description:'@Validator.@IsAlpha()'})
     lastName!: string;
-    @Field(() => User, {nullable:true})
-    user!: InstanceType<typeof User>;
 }
 
 @ArgsType()
@@ -1468,16 +1419,12 @@ export class UpsertOneUserArgs {
 export class UserAvgAggregateInput {
     @Field(() => Boolean, {nullable:true})
     id?: true;
-    @Field(() => Boolean, {nullable:true})
-    profileId?: true;
 }
 
 @ObjectType()
 export class UserAvgAggregate {
     @Field(() => Float, {nullable:true})
     id?: number;
-    @HideField()
-    profileId?: number;
 }
 
 @InputType()
@@ -1486,10 +1433,8 @@ export class UserCountAggregateInput {
     id?: true;
     @Field(() => Boolean, {nullable:true})
     pwd?: true;
-    @HideField()
-    role?: true;
     @Field(() => Boolean, {nullable:true})
-    profileId?: true;
+    email?: true;
     @Field(() => Boolean, {nullable:true})
     createdAt?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1505,9 +1450,7 @@ export class UserCountAggregate {
     @HideField()
     pwd!: number;
     @Field(() => Int, {nullable:false})
-    role!: number;
-    @HideField()
-    profileId!: number;
+    email!: number;
     @Field(() => Int, {nullable:false})
     createdAt!: number;
     @Field(() => Int, {nullable:false})
@@ -1524,10 +1467,8 @@ export class UserCreateManyInput {
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
     pwd!: string;
-    @HideField()
-    role?: Roles;
-    @Field(() => Int, {nullable:false})
-    profileId!: number;
+    @Field(() => String, {nullable:false})
+    email!: string;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1558,8 +1499,6 @@ export class UserCreateWithoutProfileInput {
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
     pwd!: string;
-    @HideField()
-    role?: Roles;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1572,8 +1511,6 @@ export class UserCreateInput {
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
     pwd!: string;
-    @HideField()
-    role?: Roles;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1614,10 +1551,8 @@ export class UserGroupBy {
     id!: number;
     @HideField()
     pwd!: string;
-    @Field(() => Roles, {nullable:false})
-    role!: Roles;
-    @HideField()
-    profileId!: number;
+    @Field(() => String, {nullable:false})
+    email!: string;
     @Field(() => Date, {nullable:false})
     createdAt!: Date | string;
     @Field(() => Date, {nullable:false})
@@ -1640,10 +1575,8 @@ export class UserMaxAggregateInput {
     id?: true;
     @Field(() => Boolean, {nullable:true})
     pwd?: true;
-    @HideField()
-    role?: true;
     @Field(() => Boolean, {nullable:true})
-    profileId?: true;
+    email?: true;
     @Field(() => Boolean, {nullable:true})
     createdAt?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1656,10 +1589,8 @@ export class UserMaxAggregate {
     id?: number;
     @HideField()
     pwd?: string;
-    @Field(() => Roles, {nullable:true})
-    role?: Roles;
-    @HideField()
-    profileId?: number;
+    @Field(() => String, {nullable:true})
+    email?: string;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1672,10 +1603,8 @@ export class UserMinAggregateInput {
     id?: true;
     @Field(() => Boolean, {nullable:true})
     pwd?: true;
-    @HideField()
-    role?: true;
     @Field(() => Boolean, {nullable:true})
-    profileId?: true;
+    email?: true;
     @Field(() => Boolean, {nullable:true})
     createdAt?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1688,10 +1617,8 @@ export class UserMinAggregate {
     id?: number;
     @HideField()
     pwd?: string;
-    @Field(() => Roles, {nullable:true})
-    role?: Roles;
-    @HideField()
-    profileId?: number;
+    @Field(() => String, {nullable:true})
+    email?: string;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1704,10 +1631,8 @@ export class UserOrderByInput {
     id?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
     pwd?: SortOrder;
-    @HideField()
-    role?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
-    profileId?: SortOrder;
+    email?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
     createdAt?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
@@ -1734,10 +1659,8 @@ export class UserScalarWhereWithAggregatesInput {
     id?: InstanceType<typeof IntWithAggregatesFilter>;
     @Field(() => StringWithAggregatesFilter, {nullable:true})
     pwd?: InstanceType<typeof StringWithAggregatesFilter>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesWithAggregatesFilter>;
-    @Field(() => IntWithAggregatesFilter, {nullable:true})
-    profileId?: InstanceType<typeof IntWithAggregatesFilter>;
+    @Field(() => StringWithAggregatesFilter, {nullable:true})
+    email?: InstanceType<typeof StringWithAggregatesFilter>;
     @Field(() => DateTimeWithAggregatesFilter, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeWithAggregatesFilter>;
     @Field(() => DateTimeWithAggregatesFilter, {nullable:true})
@@ -1748,16 +1671,12 @@ export class UserScalarWhereWithAggregatesInput {
 export class UserSumAggregateInput {
     @Field(() => Boolean, {nullable:true})
     id?: true;
-    @Field(() => Boolean, {nullable:true})
-    profileId?: true;
 }
 
 @ObjectType()
 export class UserSumAggregate {
     @Field(() => Int, {nullable:true})
     id?: number;
-    @HideField()
-    profileId?: number;
 }
 
 @InputType()
@@ -1778,8 +1697,6 @@ export class UserUncheckedCreateWithoutProfileInput {
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
     pwd!: string;
-    @HideField()
-    role?: Roles;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1794,10 +1711,8 @@ export class UserUncheckedCreateInput {
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
     pwd!: string;
-    @HideField()
-    role?: Roles;
-    @Field(() => Int, {nullable:false})
-    profileId!: number;
+    @Field(() => String, {nullable:false})
+    email!: string;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1810,10 +1725,8 @@ export class UserUncheckedUpdateManyInput {
     id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
-    @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
-    profileId?: InstanceType<typeof IntFieldUpdateOperationsInput>;
+    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
+    email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1844,8 +1757,6 @@ export class UserUncheckedUpdateWithoutProfileInput {
     id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1858,10 +1769,8 @@ export class UserUncheckedUpdateInput {
     id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
-    @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
-    profileId?: InstanceType<typeof IntFieldUpdateOperationsInput>;
+    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
+    email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1872,8 +1781,6 @@ export class UserUncheckedUpdateInput {
 export class UserUpdateManyMutationInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1902,8 +1809,6 @@ export class UserUpdateOneWithoutProfileInput {
 export class UserUpdateWithoutProfileInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1914,8 +1819,6 @@ export class UserUpdateWithoutProfileInput {
 export class UserUpdateInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1950,12 +1853,10 @@ export class UserWhereInput {
     id?: InstanceType<typeof IntFilter>;
     @Field(() => StringFilter, {nullable:true})
     pwd?: InstanceType<typeof StringFilter>;
-    @HideField()
-    role?: InstanceType<typeof EnumRolesFilter>;
-    @Field(() => ProfileRelationFilter, {nullable:true})
-    profile?: InstanceType<typeof ProfileRelationFilter>;
-    @Field(() => IntFilter, {nullable:true})
-    profileId?: InstanceType<typeof IntFilter>;
+    @Field(() => StringFilter, {nullable:true})
+    email?: InstanceType<typeof StringFilter>;
+    @Field(() => ProfileWhereInput, {nullable:true})
+    profile?: InstanceType<typeof ProfileWhereInput>;
     @Field(() => DateTimeFilter, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFilter>;
     @Field(() => DateTimeFilter, {nullable:true})
@@ -1968,12 +1869,10 @@ export class User {
     id!: number;
     @HideField()
     pwd!: string;
-    @Field(() => Roles, {nullable:false,defaultValue:'INACTIVE'})
-    role!: Roles;
+    @Field(() => String, {nullable:false})
+    email!: string;
     @Field(() => Profile, {nullable:false})
     profile!: InstanceType<typeof Profile>;
-    @HideField()
-    profileId!: number;
     @Field(() => Date, {nullable:false})
     createdAt!: Date;
     @Field(() => Date, {nullable:false})

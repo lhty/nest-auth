@@ -5,8 +5,7 @@ CREATE TYPE "Roles" AS ENUM ('PASSWORD_REQUIRED', 'INACTIVE', 'REGULAR', 'ADVANC
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "pwd" TEXT NOT NULL,
-    "role" "Roles" NOT NULL DEFAULT E'INACTIVE',
-    "profileId" INTEGER NOT NULL,
+    "email" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -15,17 +14,12 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Profile" (
-    "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
+    "role" "Roles" NOT NULL DEFAULT E'INACTIVE',
     "phone" TEXT,
     "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-
-    PRIMARY KEY ("id")
+    "lastName" TEXT NOT NULL
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_profileId_unique" ON "User"("profileId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Profile.email_unique" ON "Profile"("email");
@@ -34,4 +28,4 @@ CREATE UNIQUE INDEX "Profile.email_unique" ON "Profile"("email");
 CREATE UNIQUE INDEX "Profile.phone_unique" ON "Profile"("phone");
 
 -- AddForeignKey
-ALTER TABLE "User" ADD FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "User" ADD FOREIGN KEY ("email") REFERENCES "Profile"("email") ON DELETE CASCADE ON UPDATE CASCADE;

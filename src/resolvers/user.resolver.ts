@@ -11,7 +11,7 @@ import {
 import { Public } from '../common/decorators/public';
 import { userIdFromReq } from '../common/decorators/userId';
 import { PermissionGuard } from '../common/guards/permission.guard';
-import { Auth } from '../modules/auth/entities';
+import { Auth } from '../modules/auth/dto';
 import { UserService } from '../services/user.service';
 
 @UseGuards(PermissionGuard)

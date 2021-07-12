@@ -7,7 +7,7 @@ import {
 } from '@nestjs/graphql';
 import { User } from '../../prisma/@generated';
 import { Public } from '../common/decorators/public';
-import { Auth, UserLoginInput } from '../modules/auth/entities';
+import { Auth, UserLoginInput } from '../modules/auth/dto';
 import { AuthService } from '../services/auth.service';
 
 @Public()
