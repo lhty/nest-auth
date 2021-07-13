@@ -1,6 +1,15 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { User, Prisma } from '@prisma/client';
-import { DeleteOneUserArgs, UpdateOneUserArgs } from '../../prisma/@generated';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
+import { User } from '@prisma/client';
+import {
+  DeleteOneUserArgs,
+  FindManyUserArgs,
+  FindUniqueUserArgs,
+  UpdateOneUserArgs,
+} from '../../prisma/@generated';
 import { Token } from '../modules/auth/dto';
 import { UserWithProfileInput } from '../modules/user/dto';
 import { AuthService } from './auth.service';
@@ -15,12 +24,20 @@ export class UserService {
     private authService: AuthService,
   ) {}
 
-  async user(args: Prisma.UserFindUniqueArgs): Promise<User | null> {
-    return this.prisma.user.findUnique({ ...args, include: { profile: true } });
+  async user(args: FindUniqueUserArgs): Promise<User | null> {
+    const user = this.prisma.user.findUnique({
+      ...args,
+      include: { profile: true },
+    });
+    return user;
   }
 
-  async users(params: Prisma.UserFindManyArgs): Promise<User[]> {
-    return this.prisma.user.findMany({ ...params, include: { profile: true } });
+  async users(args: FindManyUserArgs): Promise<User[]> {
+    const users = this.prisma.user.findMany({
+      ...args,
+      include: { profile: true },
+    });
+    return users;
   }
 
   async createUser(
@@ -31,36 +48,34 @@ export class UserService {
     const { pwd, ...profile } = input;
     const data = { pwd, profile: { create: profile } };
     try {
-      const new_user = await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data,
+        include: { profile: true },
       });
-      console.log(new_user);
       const tokens = this.authService.generateTokens({
-        id: new_user.id,
+        id: user.id,
       });
-      return {
-        ...tokens,
-        user: new_user,
-      };
-    } catch (err) {
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === 'P2002'
-      ) {
+      return { ...tokens, user };
+    } catch (error) {
+      if (error.code === 'P2002') {
         throw new ConflictException(`Email ${profile.email} already used.`);
       } else {
-        console.log(err);
-        throw new Error(err);
+        throw new BadRequestException(error.message);
       }
     }
   }
 
-  async updateUser(input: UpdateOneUserArgs): Promise<User> {
-    return await this.prisma.user.update(input);
+  async updateUser(args: UpdateOneUserArgs): Promise<User> {
+    const { data, where } = args;
+    const user = await this.prisma.user.update({
+      data,
+      where,
+    });
+    return user;
   }
 
-  async deleteUser(user: DeleteOneUserArgs): Promise<Boolean> {
-    const result = await this.prisma.user.delete(user);
+  async deleteUser(args: DeleteOneUserArgs): Promise<Boolean> {
+    const result = await this.prisma.user.delete(args);
     return !!result;
   }
 }

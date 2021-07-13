@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { PrismaService } from './prisma.service';
-import { Token } from '../modules/auth/dto';
+import { Auth, Token } from '../modules/auth/dto';
 import { Jwt } from '../modules/auth/interfaces';
 import { PasswordService } from './password.service';
 
@@ -18,22 +18,22 @@ export class AuthService {
     private readonly passwordService: PasswordService,
   ) {}
 
-  async login(email: string, password: string): Promise<Token> {
-    const user = await this.prisma.profile
-      .findUnique({
+  async login(email: string, password: string): Promise<Auth> {
+    try {
+      const pwd = await this.passwordService.validatePassword(
+        password,
+        user.pwd,
+      );
+      const user = await this.prisma.user.findUnique({
         where: { email },
-      })
-      .User();
-    if (
-      !user ||
-      !(await this.passwordService.validatePassword(password, user.pwd))
-    ) {
-      throw new BadRequestException('Invalid credentials');
-    }
+      });
 
-    return this.generateTokens({
-      id: user.id,
-    });
+      return this.generateTokens({
+        id: user.id,
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async validateUser(id: number): Promise<User> {

@@ -12,7 +12,8 @@ export class GraphQLService implements GqlOptionsFactory {
         req,
         res,
       }),
-      formatError: (error) => error.extensions.exception.response,
+      formatError: (error) =>
+        error.extensions.exception.response || error.message,
       autoSchemaFile: './schema.gql',
       sortSchema: true,
     };
