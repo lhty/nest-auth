@@ -7,5 +7,5 @@ export class UserWithProfileInput extends ProfileUncheckedCreateWithoutUserInput
   @Field(() => String, { nullable: false })
   @Validator.MinLength(5)
   @Validator.MaxLength(50)
-  pwd!: string;
+  password!: string;
 }

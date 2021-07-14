@@ -27,8 +27,8 @@ model User {
   /// @Validator.MinLength(5)
   /// @Validator.MaxLength(50)
   /// @HideField()
-  pwd       String
-  email     String
+  password  String
+  email     String   @unique
   profile   Profile  @relation(fields: [email], references: [email])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

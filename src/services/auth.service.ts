@@ -20,17 +20,18 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<Auth> {
     try {
-      const pwd = await this.passwordService.validatePassword(
-        password,
-        user.pwd,
-      );
       const user = await this.prisma.user.findUnique({
         where: { email },
+        include: { profile: true },
       });
-
-      return this.generateTokens({
+      if (!user) {
+        throw new Error('wrong email or password');
+      }
+      await this.passwordService.validatePassword(password, user.password);
+      const tokens = this.generateTokens({
         id: user.id,
       });
+      return { ...tokens, user };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -66,14 +67,19 @@ export class AuthService {
     });
   }
 
-  refreshToken(token: string) {
+  async refreshToken(token: string) {
     try {
       const { id } = this.jwtService.verify(token, {
         secret: process.env.JWT_REFRESH_SECRET,
       });
-      return this.generateTokens({
+      const tokens = this.generateTokens({
         id,
       });
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        include: { profile: true },
+      });
+      return { ...tokens, user };
     } catch (e) {
       throw new UnauthorizedException(e.message);
     }

@@ -6,7 +6,7 @@ import { Roles } from './@generated';
 const prisma = new PrismaClient();
 
 const seedData = {
-  pwd: 'admin',
+  password: 'admin',
   profile: {
     create: {
       email: 'admin1@mail.com',
@@ -22,8 +22,8 @@ async function main() {
   dotenv.config();
 
   const data = seedData;
-  data.pwd = await hash(data.pwd);
-  await prisma.user.create({ data });
+  data.password = await hash(data.password);
+  const user = await prisma.user.create({ data });
 }
 
 main()

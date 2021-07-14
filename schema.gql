@@ -3,10 +3,7 @@
 # ------------------------------------------------------
 
 type Auth {
-  """JWT access token"""
   accessToken: String!
-
-  """JWT refresh token"""
   refreshToken: String!
   user: User
 }
@@ -230,7 +227,7 @@ input UserOrderByInput {
   createdAt: SortOrder
   email: SortOrder
   id: SortOrder
-  pwd: SortOrder
+  password: SortOrder
   updatedAt: SortOrder
 }
 
@@ -243,7 +240,7 @@ enum UserScalarFieldEnum {
   createdAt
   email
   id
-  pwd
+  password
   updatedAt
 }
 
@@ -253,8 +250,8 @@ type UserSumAggregate {
 
 input UserUpdateInput {
   createdAt: DateTimeFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
   profile: ProfileUpdateOneRequiredWithoutUserInput
-  pwd: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -265,12 +262,13 @@ input UserWhereInput {
   createdAt: DateTimeFilter
   email: StringFilter
   id: IntFilter
+  password: StringFilter
   profile: ProfileRelationFilter
-  pwd: StringFilter
   updatedAt: DateTimeFilter
 }
 
 input UserWhereUniqueInput {
+  email: String
   id: Int
 }
 
@@ -278,6 +276,6 @@ input UserWithProfileInput {
   email: EmailAddress!
   firstName: String!
   lastName: String!
+  password: String!
   phone: PhoneNumber!
-  pwd: String!
 }

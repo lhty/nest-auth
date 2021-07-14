@@ -12,7 +12,7 @@ import { ID } from '@nestjs/graphql';
 
 export enum UserScalarFieldEnum {
     id = "id",
-    pwd = "pwd",
+    password = "password",
     email = "email",
     createdAt = "createdAt",
     updatedAt = "updatedAt"
@@ -1072,7 +1072,7 @@ export class UserCountAggregateInput {
     @Field(() => Boolean, {nullable:true})
     id?: true;
     @Field(() => Boolean, {nullable:true})
-    pwd?: true;
+    password?: true;
     @Field(() => Boolean, {nullable:true})
     email?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1088,7 +1088,7 @@ export class UserCountAggregate {
     @Field(() => Int, {nullable:false})
     id!: number;
     @HideField()
-    pwd!: number;
+    password!: number;
     @Field(() => Int, {nullable:false})
     email!: number;
     @Field(() => Int, {nullable:false})
@@ -1106,7 +1106,7 @@ export class UserCreateManyInput {
     @Field(() => String, {nullable:false})
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
-    pwd!: string;
+    password!: string;
     @Field(() => String, {nullable:false})
     email!: string;
     @Field(() => Date, {nullable:true})
@@ -1138,7 +1138,7 @@ export class UserCreateWithoutProfileInput {
     @Field(() => String, {nullable:false})
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
-    pwd!: string;
+    password!: string;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1150,7 +1150,7 @@ export class UserCreateInput {
     @Field(() => String, {nullable:false})
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
-    pwd!: string;
+    password!: string;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1190,7 +1190,7 @@ export class UserGroupBy {
     @Field(() => Int, {nullable:false})
     id!: number;
     @HideField()
-    pwd!: string;
+    password!: string;
     @Field(() => String, {nullable:false})
     email!: string;
     @Field(() => Date, {nullable:false})
@@ -1214,7 +1214,7 @@ export class UserMaxAggregateInput {
     @Field(() => Boolean, {nullable:true})
     id?: true;
     @Field(() => Boolean, {nullable:true})
-    pwd?: true;
+    password?: true;
     @Field(() => Boolean, {nullable:true})
     email?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1228,7 +1228,7 @@ export class UserMaxAggregate {
     @Field(() => Int, {nullable:true})
     id?: number;
     @HideField()
-    pwd?: string;
+    password?: string;
     @Field(() => String, {nullable:true})
     email?: string;
     @Field(() => Date, {nullable:true})
@@ -1242,7 +1242,7 @@ export class UserMinAggregateInput {
     @Field(() => Boolean, {nullable:true})
     id?: true;
     @Field(() => Boolean, {nullable:true})
-    pwd?: true;
+    password?: true;
     @Field(() => Boolean, {nullable:true})
     email?: true;
     @Field(() => Boolean, {nullable:true})
@@ -1256,7 +1256,7 @@ export class UserMinAggregate {
     @Field(() => Int, {nullable:true})
     id?: number;
     @HideField()
-    pwd?: string;
+    password?: string;
     @Field(() => String, {nullable:true})
     email?: string;
     @Field(() => Date, {nullable:true})
@@ -1270,7 +1270,7 @@ export class UserOrderByInput {
     @Field(() => SortOrder, {nullable:true})
     id?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
-    pwd?: SortOrder;
+    password?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
     email?: SortOrder;
     @Field(() => SortOrder, {nullable:true})
@@ -1298,7 +1298,7 @@ export class UserScalarWhereWithAggregatesInput {
     @Field(() => IntWithAggregatesFilter, {nullable:true})
     id?: InstanceType<typeof IntWithAggregatesFilter>;
     @Field(() => StringWithAggregatesFilter, {nullable:true})
-    pwd?: InstanceType<typeof StringWithAggregatesFilter>;
+    password?: InstanceType<typeof StringWithAggregatesFilter>;
     @Field(() => StringWithAggregatesFilter, {nullable:true})
     email?: InstanceType<typeof StringWithAggregatesFilter>;
     @Field(() => DateTimeWithAggregatesFilter, {nullable:true})
@@ -1336,7 +1336,7 @@ export class UserUncheckedCreateWithoutProfileInput {
     @Field(() => String, {nullable:false})
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
-    pwd!: string;
+    password!: string;
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
     @Field(() => Date, {nullable:true})
@@ -1350,7 +1350,7 @@ export class UserUncheckedCreateInput {
     @Field(() => String, {nullable:false})
     @Validator.MinLength(5)
     @Validator.MaxLength(50)
-    pwd!: string;
+    password!: string;
     @Field(() => String, {nullable:false})
     email!: string;
     @Field(() => Date, {nullable:true})
@@ -1364,7 +1364,7 @@ export class UserUncheckedUpdateManyInput {
     @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
     id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    password?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1396,7 +1396,7 @@ export class UserUncheckedUpdateWithoutProfileInput {
     @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
     id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    password?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1408,7 +1408,7 @@ export class UserUncheckedUpdateInput {
     @Field(() => IntFieldUpdateOperationsInput, {nullable:true})
     id?: InstanceType<typeof IntFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    password?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     email?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1420,7 +1420,7 @@ export class UserUncheckedUpdateInput {
 @InputType()
 export class UserUpdateManyMutationInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    password?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1448,7 +1448,7 @@ export class UserUpdateOneWithoutProfileInput {
 @InputType()
 export class UserUpdateWithoutProfileInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    password?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1458,7 +1458,7 @@ export class UserUpdateWithoutProfileInput {
 @InputType()
 export class UserUpdateInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    pwd?: InstanceType<typeof StringFieldUpdateOperationsInput>;
+    password?: InstanceType<typeof StringFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: InstanceType<typeof DateTimeFieldUpdateOperationsInput>;
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
@@ -1479,6 +1479,8 @@ export class UserUpsertWithoutProfileInput {
 export class UserWhereUniqueInput {
     @Field(() => Int, {nullable:true})
     id?: number;
+    @Field(() => String, {nullable:true})
+    email?: string;
 }
 
 @InputType()
@@ -1492,7 +1494,7 @@ export class UserWhereInput {
     @Field(() => IntFilter, {nullable:true})
     id?: InstanceType<typeof IntFilter>;
     @Field(() => StringFilter, {nullable:true})
-    pwd?: InstanceType<typeof StringFilter>;
+    password?: InstanceType<typeof StringFilter>;
     @Field(() => StringFilter, {nullable:true})
     email?: InstanceType<typeof StringFilter>;
     @Field(() => ProfileRelationFilter, {nullable:true})
@@ -1508,7 +1510,7 @@ export class User {
     @Field(() => ID, {nullable:false})
     id!: number;
     @HideField()
-    pwd!: string;
+    password!: string;
     @Field(() => String, {nullable:false})
     email!: string;
     @Field(() => Profile, {nullable:false})

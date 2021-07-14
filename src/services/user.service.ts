@@ -43,10 +43,10 @@ export class UserService {
   async createUser(
     input: UserWithProfileInput,
   ): Promise<Token & { user: User }> {
-    input.pwd = await this.passwordService.hashPassword(input.pwd);
+    input.password = await this.passwordService.hashPassword(input.password);
     input.email = input.email.toLowerCase();
-    const { pwd, ...profile } = input;
-    const data = { pwd, profile: { create: profile } };
+    const { password, ...profile } = input;
+    const data = { password, profile: { create: profile } };
     try {
       const user = await this.prisma.user.create({
         data,
