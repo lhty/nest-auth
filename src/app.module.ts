@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { Module, ValidationPipe } from '@nestjs/common';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
-import { GqlConfigService } from './config/graphql.options';
-import { JwtTokenGuard } from './common/guards/gql-jwt.guard';
+import { JwtGuard } from './common/guards/jwt.guard';
 import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user.module';
+import { UserModule } from './modules/user/user.module';
+import { GraphQLService } from './services/graphql.service';
 
 @Module({
   imports: [
     GraphQLModule.forRootAsync({
-      useClass: GqlConfigService,
+      useClass: GraphQLService,
     }),
     AuthModule,
     UserModule,
@@ -17,7 +17,11 @@ import { UserModule } from './modules/user.module';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtTokenGuard,
+      useClass: JwtGuard,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
     },
   ],
 })

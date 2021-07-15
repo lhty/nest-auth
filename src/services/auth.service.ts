@@ -2,12 +2,11 @@ import {
   Injectable,
   BadRequestException,
   UnauthorizedException,
-  ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, User } from '@prisma/client';
-import { PrismaService } from '../config/prisma.service';
-import { Token } from '../modules/auth/entities';
+import { User } from '@prisma/client';
+import { PrismaService } from './prisma.service';
+import { Auth, Token } from '../modules/auth/dto';
 import { Jwt } from '../modules/auth/interfaces';
 import { PasswordService } from './password.service';
 
@@ -19,53 +18,35 @@ export class AuthService {
     private readonly passwordService: PasswordService,
   ) {}
 
-  async login(email: string, password: string): Promise<Token> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
-
-    const passwordValid = await this.passwordService.validatePassword(
-      password,
-      user.pwd,
-    );
-
-    if (!passwordValid || !user) {
-      throw new BadRequestException('Invalid credentials');
-    }
-
-    return this.generateTokens({
-      id: user.id,
-    });
-  }
-
-  async createUser(user: Prisma.UserCreateInput): Promise<Token> {
-    user.email = user.email.toLowerCase();
-    const hashPwd = await this.passwordService.hashPassword(user.pwd);
-
+  async login(email: string, password: string): Promise<Auth> {
     try {
-      const new_user = await this.prisma.user.create({
-        data: { ...user, pwd: hashPwd },
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+        include: { profile: true },
       });
-      return this.generateTokens({
-        id: new_user.id,
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException(`Email ${user.email} already used.`);
-      } else {
-        throw new Error(error);
+      if (!user) {
+        throw new Error('wrong email or password');
       }
+      await this.passwordService.validatePassword(password, user.password);
+      const tokens = this.generateTokens({
+        id: user.id,
+      });
+      return { ...tokens, user };
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
   }
 
   async validateUser(id: number): Promise<User> {
-    return this.prisma.user.findUnique({ where: { id } });
+    return await this.prisma.user.findUnique({
+      where: { id },
+      include: { profile: true },
+    });
   }
 
   async getUserFromToken(token: string): Promise<User> {
     const { id } = this.jwtService.decode(token) as Jwt;
-    return this.prisma.user.findUnique({ where: { id } });
+    return await this.prisma.user.findUnique({ where: { id } });
   }
 
   generateTokens(payload: Partial<Jwt>): Token {
@@ -86,15 +67,19 @@ export class AuthService {
     });
   }
 
-  refreshToken(token: string) {
+  async refreshToken(token: string) {
     try {
       const { id } = this.jwtService.verify(token, {
         secret: process.env.JWT_REFRESH_SECRET,
       });
-
-      return this.generateTokens({
+      const tokens = this.generateTokens({
         id,
       });
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        include: { profile: true },
+      });
+      return { ...tokens, user };
     } catch (e) {
       throw new UnauthorizedException(e.message);
     }

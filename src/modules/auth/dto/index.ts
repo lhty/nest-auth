@@ -1,24 +1,25 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { User } from '@prisma/client';
+import { Profile, User } from '../../../../prisma/@generated';
 
 @ObjectType()
 export class Token {
-  @Field({ description: 'JWT access token' })
+  @Field()
   accessToken: string;
 
-  @Field({ description: 'JWT refresh token' })
+  @Field()
   refreshToken: string;
 }
 
 @ObjectType()
 export class Auth extends Token {
-  user: User;
+  @Field(() => User, { nullable: true })
+  user: any;
 }
 
 @InputType()
 export class UserLoginInput {
-  @Field(() => String)
+  @Field()
   email: string;
-  @Field(() => String)
+  @Field()
   password: string;
 }

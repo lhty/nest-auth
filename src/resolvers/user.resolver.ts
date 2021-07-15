@@ -7,11 +7,14 @@ import {
   UpdateOneUserArgs,
   DeleteOneUserArgs,
 } from '../../prisma/@generated';
-import { GetUserFromReq } from '../common/decorators/user';
-import { JwtUserGuard } from '../common/guards/gql-jwt.guard';
+import { Public } from '../common/decorators/public';
+import { userIdFromReq } from '../common/decorators/userId';
+import { PermissionGuard } from '../common/guards/permission.guard';
+import { Auth } from '../modules/auth/dto';
+import { UserWithProfileInput } from '../modules/user/dto';
 import { UserService } from '../services/user.service';
 
-@UseGuards(JwtUserGuard)
+@UseGuards(PermissionGuard)
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
@@ -22,8 +25,8 @@ export class UserResolver {
   }
 
   @Query(() => User, { name: 'me' })
-  async ME(@GetUserFromReq() user: User) {
-    return user;
+  async ME(@userIdFromReq() id: number) {
+    return await this.userService.user({ where: { id } });
   }
 
   @Query(() => [User], { name: 'users' })
@@ -31,12 +34,18 @@ export class UserResolver {
     return this.userService.users(params);
   }
 
+  @Public()
+  @Mutation(() => Auth, { name: 'createUser' })
+  async CREATE(@Args('user') user: UserWithProfileInput) {
+    return this.userService.createUser(user);
+  }
+
   @Mutation(() => User, { name: 'updateUser' })
   async UPDATE(@Args() user: UpdateOneUserArgs) {
     return this.userService.updateUser(user);
   }
 
-  @Mutation(() => User, { name: 'deleteUser' })
+  @Mutation(() => Boolean, { name: 'deleteUser' })
   async DELETE(@Args() user: DeleteOneUserArgs) {
     return this.userService.deleteUser(user);
   }
